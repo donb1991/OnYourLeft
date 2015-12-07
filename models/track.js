@@ -27,4 +27,4 @@ var trackSchema = mongoose.Schema({
 
 var Track = mongoose.model('track', trackSchema);
 
-model.export = Track;
+module.exports = Track;

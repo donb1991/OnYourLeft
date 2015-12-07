@@ -2,6 +2,7 @@ var express = require('express');
 app = express();
 var ejs = require('ejs');
 var mongoose = require('mongoose');
+var db = require('./models');
 
 app.set('view engine', 'ejs');
 require('./controllers');
