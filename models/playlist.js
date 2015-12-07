@@ -24,7 +24,7 @@ var playlistSchema = mongoose.Schema({
   },
   tracks: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'track'
+    ref: 'PlaylistTrack'
   }]
 });
 

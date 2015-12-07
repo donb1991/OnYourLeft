@@ -18,7 +18,7 @@ var trackSchema = mongoose.Schema({
   },
   playlists: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'playlist'
+    ref: 'playlistTrack'
   }],
   title: {
     type: String
