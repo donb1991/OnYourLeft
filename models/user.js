@@ -1,15 +1,15 @@
 var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
-  spotify_user_id: {
-    type: 'string'
-  },
   pace: {
     type: Number
   },
-  playlists: {
+  playlists: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: playlist
+    ref: 'playlist'
+  }],
+  spotifyUserId: {
+    type: String
   }
 });
 
