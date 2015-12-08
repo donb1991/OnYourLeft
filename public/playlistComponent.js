@@ -25,7 +25,61 @@ var Search = React.createClass({
   }
 });
 
+var SearchResult = React.createClass({
+  render: function() {
+    return <table className="large-6 columns">
+      <thead>
+        <tr>
+          <th>
+            Title
+          </th>
+          <th>
+            Artist
+          </th>
+          <th>
+            Album
+          </th>
+          <th>
+            BPM
+          </th>
+          <th>
+            Add
+          </th>
+        </tr>
+      </thead>
+    </table>
+  }
+});
+
 var Playlist = React.createClass({
+  render: function() {
+    return <div className="large-6 columns">
+        <table className="large-12 columns">
+          <thead>
+            <tr>
+              <th>
+                Title
+              </th>
+              <th>
+                Artist
+              </th>
+              <th>
+                Album
+              </th>
+              <th>
+                BPM
+              </th>
+              <th>
+                Add
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+  }
+});
+
+var PlaylistBuilder = React.createClass({
   getInitialState: function() {
     return {searchValue: '', pace: ''};
   },
@@ -50,56 +104,14 @@ var Playlist = React.createClass({
         searchValue={this.state.searchValue}
       />
       <div className="row">
-        <table className="large-6 columns">
-          <thead>
-            <tr>
-              <th>
-                Title
-              </th>
-              <th>
-                Artist
-              </th>
-              <th>
-                Album
-              </th>
-              <th>
-                BPM
-              </th>
-              <th>
-                Add
-              </th>
-            </tr>
-          </thead>
-        </table>
-        <div className="large-6 columns">
-          <table className="large-12 columns">
-            <thead>
-              <tr>
-                <th>
-                  Title
-                </th>
-                <th>
-                  Artist
-                </th>
-                <th>
-                  Album
-                </th>
-                <th>
-                  BPM
-                </th>
-                <th>
-                  Add
-                </th>
-              </tr>
-            </thead>
-          </table>
-        </div>
+        <SearchResult />
+        <Playlist />
       </div>
     </div>
   }
 });
 
 ReactDOM.render(
-  <Playlist />,
+  <PlaylistBuilder />,
   document.getElementById('buildPlaylist')
 );
