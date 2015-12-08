@@ -26,7 +26,20 @@ var Search = React.createClass({
 });
 
 var SearchResult = React.createClass({
+  handleClick: function(event) {
+    this.props.addToPlaylist(this.props.results[event.target.value]);
+  },
   render: function() {
+    var resultElms = this.props.results.map((result, index) => {
+      return <tr key={index}>
+        <td>{result.title}</td>
+        <td>{result.artist}</td>
+        <td>A Album</td>
+        <td>{result.bpm}</td>
+        <td><button className="button" value={index} onClick={this.handleClick}>+</button></td>
+      </tr>
+    });
+
     return <table className="large-6 columns">
       <thead>
         <tr>
@@ -47,12 +60,28 @@ var SearchResult = React.createClass({
           </th>
         </tr>
       </thead>
+      <tbody>
+        {resultElms}
+      </tbody>
     </table>
   }
 });
 
 var Playlist = React.createClass({
+  handleClick: function(event) {
+    this.props.removeFromPlaylist(event.target.value);
+  },
   render: function() {
+    var trackElms = this.props.tracks.map((track, index) => {
+      return <tr key={index}>
+        <td>{track.title}</td>
+        <td>{track.artist}</td>
+        <td>A Album</td>
+        <td>{track.bpm}</td>
+        <td><button className="button" onClick={this.handleClick}>-</button></td>
+      </tr>
+    })
+
     return <div className="large-6 columns">
         <table className="large-12 columns">
           <thead>
@@ -74,14 +103,27 @@ var Playlist = React.createClass({
               </th>
             </tr>
           </thead>
+          <tbody>
+            {trackElms}
+          </tbody>
         </table>
       </div>
   }
 });
 
 var PlaylistBuilder = React.createClass({
+  addToPlaylist: function(track) {
+    var newState = this.state.playlist;
+    newState.push(track);
+    this.setState({playlist: newState});
+  },
   getInitialState: function() {
-    return {searchValue: '', pace: ''};
+    return {
+      searchValue: '',
+      pace: '',
+      results: [],
+      playlist: []
+    };
   },
   updatePace: function(value) {
     this.setState({pace: value});
@@ -89,9 +131,17 @@ var PlaylistBuilder = React.createClass({
   updateSearchValue: function(value) {
     this.setState({searchValue: value})
   },
+  updateResults: function(value) {
+    this.setState({results: value})
+  },
+  removeFromPlaylist: function(index) {
+    var newState = this.state.playlist;
+    newState.splice(index, 1);
+    this.setState({playlist: newState});
+  },
   getTracks: function() {
-    $.get("http://localhost:3000/search?q=" + this.state.searchValue).done(function(data) {
-      console.log(data);
+    $.get("http://localhost:3000/search?q=" + this.state.searchValue).done((data) => {
+      this.updateResults(data);
     });
   },
   render: function() {
@@ -104,8 +154,15 @@ var PlaylistBuilder = React.createClass({
         searchValue={this.state.searchValue}
       />
       <div className="row">
-        <SearchResult />
-        <Playlist />
+        <SearchResult
+          addToPlaylist={this.addToPlaylist}
+          results={this.state.results}
+        />
+        <Playlist
+          updateTracks={this.updatePlaylist}
+          removeFromPlaylist={this.removeFromPlaylist}
+          tracks={this.state.playlist}
+        />
       </div>
     </div>
   }
