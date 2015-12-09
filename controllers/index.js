@@ -1,3 +1,5 @@
+'use strict';
+
 var db = require('../models');
 var request = require('request');
 
@@ -6,13 +8,18 @@ app.get('/', function(req, res) {
 });
 
 app.get('/search', function(req, res) {
-  request.get('http://developer.echonest.com/api/v4/song/profile?api_key=' + process.env.ECHONESTAPIKEY + '&id=SOUJWUH13E89D89DED&bucket=audio_summary', function(err, response, body) {
+  var url = encodeURI(`http://developer.echonest.com/api/v4/song/search?api_key=${process.env.ECHONESTAPIKEY}&format=json&results=100&artist=${req.query.q}&bucket=audio_summary`);
+  request.get(url, function(err, response, body) {
+    var songs = [];
     var newSong = {};
-    var jsonSong = JSON.parse(body).response.songs[0];
-    newSong.title = JSON.parse(body).response.songs[0].title;
-    newSong.artist = JSON.parse(body).response.songs[0].artist_name;
-    newSong.bpm = JSON.parse(body).response.songs[0].audio_summary.tempo;
-
-    res.send([newSong, newSong]);
+    var jsonSongs = JSON.parse(body).response.songs;
+    for(var i = 0; i < jsonSongs.length; i++) {
+      newSong.title = jsonSongs[i].title;
+      newSong.artist = jsonSongs[i].artist_name;
+      newSong.bpm = jsonSongs[i].audio_summary.tempo;
+      songs.push(newSong);
+      newSong = {};
+    }
+    res.send(songs);
   });
 });
