@@ -36,3 +36,5 @@ app.get('/search', function(req, res) {
     res.send(songs);
   });
 });
+
+require('./spotify');
