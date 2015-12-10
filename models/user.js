@@ -16,6 +16,9 @@ var userSchema = mongoose.Schema({
   },
   refresh_token: {
     type: String
+  },
+  token_created: {
+    type: Number
   }
 });
 
