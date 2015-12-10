@@ -4,7 +4,7 @@ var playlistSchema = mongoose.Schema({
   name: {
     type: String
   },
-  dataCreate: {
+  dateCreate: {
     type: Date
   },
   pace: {
