@@ -10,6 +10,12 @@ var userSchema = mongoose.Schema({
   }],
   spotifyUserId: {
     type: String
+  },
+  access_token: {
+    type: String
+  },
+  refresh_token: {
+    type: String
   }
 });
 

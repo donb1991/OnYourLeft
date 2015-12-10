@@ -21,7 +21,11 @@
           <li><a href="#">Build a Playlist</a></li>
           <li><a href="#">View all Playlist</a></li>
           <li><a href="#">Your Playlist</a></li>
-          <li><a href="#">Log in </a></li>
+          <%if(locals.user) { %>
+            <li><a href="/logout">Logout</a></li>
+          <% } else { %>
+            <li><a href="/login">Login </a></li>
+          <% } %>
         </ul>
       </div>
     </nav>
