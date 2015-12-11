@@ -6,19 +6,25 @@ var Search = React.createClass({
       this.props.updateSearchValue(event.target.value);
     }
   },
+  handleSubmit: function(event) {
+    event.preventDefault();
+    this.props.getTracks();
+  },
   render: function() {
     return <div className="row">
       <div className="large-8 columns">
         <div className="row">
-          <div className="large-8 columns">
-            <input type="text" name='searchValue' placeholder="Search" value={this.props.searchValue} onChange={this.handleChange}/>
-          </div>
-          <div className="large-2 columns">
-            <input type="text" name="pace" placeholder="Pace" value={this.props.pace} onChange={this.handleChange}/>
-          </div>
-          <div className="large-2 columns">
-            <button className="button" type='button' name='button' onClick={this.props.getTracks}>Search</button>
-          </div>
+          <form onSubmit={this.handleSubmit}>
+            <div className="large-8 columns">
+              <input type="text" name='searchValue' placeholder="Search" value={this.props.searchValue} onChange={this.handleChange}/>
+            </div>
+            <div className="large-2 columns">
+              <input type="text" name="pace" placeholder="Pace" value={this.props.pace} onChange={this.handleChange}/>
+            </div>
+            <div className="large-2 columns">
+              <button className="button" type='sumbit' name='button'>Search</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
