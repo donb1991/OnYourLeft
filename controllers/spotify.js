@@ -148,7 +148,7 @@ function exportPlaylist(user, tracksIds) {
           }
         };
         request.post(options, function(error, response, body) {
-          console.log(error, body);
+          
         });
         for(var i = 0; i < tracksIds.length; i++) {
           db.Track.findOne({spotifyTrackId: tracksIds[i]}, function(error, track) {
