@@ -71,6 +71,14 @@ var Playlist = React.createClass({
   handleClick: function(event) {
     this.props.removeFromPlaylist(event.target.value);
   },
+  handleSumbit: function(event) {
+
+    $.ajax({
+      method: "POST",
+      url: "http://localhost:3000/playlist",
+      data: {tracks: this.props.tracks}
+    });
+  },
   render: function() {
     var trackElms = this.props.tracks.map((track, index) => {
       return <tr key={index}>
@@ -107,6 +115,9 @@ var Playlist = React.createClass({
             {trackElms}
           </tbody>
         </table>
+        <div>
+          <button className="button" onClick={this.handleSumbit}>Export to spotify</button>
+        </div>
       </div>
   }
 });

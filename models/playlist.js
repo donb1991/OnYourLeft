@@ -4,7 +4,7 @@ var playlistSchema = mongoose.Schema({
   name: {
     type: String
   },
-  dataCreate: {
+  dateCreate: {
     type: Date
   },
   pace: {
@@ -24,7 +24,7 @@ var playlistSchema = mongoose.Schema({
   },
   tracks: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'PlaylistTrack'
+    ref: 'Track'
   }]
 });
 
