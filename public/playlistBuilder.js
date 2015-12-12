@@ -32,7 +32,7 @@ var Search = React.createClass({
           <button className="button" type='sumbit' name='button'>Search</button>
         </div>
         <div className="large-2 columns">
-          <button className="button" onClick={this.props.export}>Export to spotify</button>
+          <button className="button" onClick={this.props.export}>Export to Spotify</button>
         </div>
       </form>
     </div>
@@ -45,6 +45,7 @@ var SearchResult = React.createClass({
   },
   render: function() {
     var resultElms = this.props.results.map((result, index) => {
+      var src = `https://embed.spotify.com/?uri=${result.spotifyTrackId}`
       return <tr key={index}>
         <td>{result.title}</td>
         <td>{result.artist}</td>
@@ -167,7 +168,7 @@ var PlaylistBuilder = React.createClass({
     $.ajax({
       method: "POST",
       url: "http://localhost:3000/playlist",
-      data: {tracks: this.state.tracks}
+      data: {tracks: this.state.playlist}
     });
   },
   render: function() {
