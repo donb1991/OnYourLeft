@@ -82,6 +82,7 @@ app.get('/callback', function(req, res) {
 
 app.post('/playlist', function(req, res) {
   var tracksIds = [];
+  console.log(req.body);
   req.body.tracks.forEach((track) => {
     tracksIds.push(track.spotifyTrackId);
   });
@@ -111,6 +112,20 @@ app.post('/playlist', function(req, res) {
   });
   res.redirect('/');
 });
+
+function login(res) {
+  var state = createRandomString(16);
+  res.cookie(stateKey, state);
+  var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    queryString.stringify({
+      response_type: 'code',
+      client_id: process.env.SPOTIFYID,
+      scope: scope,
+      redirect_uri: 'http://localhost:3000/callback',
+      state: state
+    }));
+}
 
 function exportPlaylist(user, tracksIds) {
   var newPlaylist = {};
@@ -148,7 +163,7 @@ function exportPlaylist(user, tracksIds) {
           }
         };
         request.post(options, function(error, response, body) {
-          console.log(error, body);
+
         });
         for(var i = 0; i < tracksIds.length; i++) {
           db.Track.findOne({spotifyTrackId: tracksIds[i]}, function(error, track) {

@@ -8,13 +8,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/search', function(req, res) {
-  var url = encodeURI(`http://developer.echonest.com/api/v4/song/search?api_key=${process.env.ECHONESTAPIKEY}&format=json&results=100&artist=${req.query.q}&bucket=audio_summary&bucket=id:spotify&bucket=tracks`);
+  var url = encodeURI(`http://developer.echonest.com/api/v4/song/search?api_key=${process.env.ECHONESTAPIKEY}&format=json&start=100&results=100&${req.query.q}&bucket=audio_summary&bucket=id:spotify&bucket=tracks`);
   var newSong = {};
-  newSong.title = 'jsonSongs[i].title';
-  newSong.artist = 'jsonSongs[i].artist_name';
-  newSong.bpm = 100;
-  newSong.spotifyTrackId = 'jsonSongs[i].tracks[0].foreign_id.split(\':\')[2]';
-
 
   request.get(url, function(err, response, body) {
     var songs = [];
@@ -38,4 +33,9 @@ app.get('/search', function(req, res) {
   });
 });
 
+
 require('./spotify');
+
+app.get('*', function(req, res) {
+  res.send("ITS A 404. I think you are lost");
+})
