@@ -1,0 +1,40 @@
+body {
+  background-color: #121314;
+  border: 0px;
+}
+
+.top-bar {
+  background-color: #212121;
+}
+
+.menu li{
+  background-color: #212121;
+  color: #87888B;
+}
+
+thead {
+  background-color: #121314;
+  color: #87888B;
+  border: 0px;
+}
+
+tbody {
+  background-color: #121314;
+  color: #D7D8DE;
+  border: 0px;
+}
+
+tr {
+  border-bottom: 1px solid #87888B;
+}
+
+.button {
+  background-color: #639000;
+  moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+}
+
+td {
+  background-color: #121314;
+  color: #D7D8DE;
+}

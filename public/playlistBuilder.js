@@ -15,21 +15,24 @@ var Search = React.createClass({
   render: function() {
     return <div className="row">
       <form onSubmit={this.handleSubmit}>
-        <div className="large-2 columns">
+        <div className="large-1 columns">
           <select value={this.props.searchBy} name="searchBy" onChange={this.handleChange}>
             <option value="artist">Artist</option>
             <option value="style">Genre</option>
             <option value="title">Title</option>
           </select>
         </div>
-        <div className="large-5 columns">
+        <div className="large-3 columns">
           <input type="text" name='searchValue' placeholder="Search" value={this.props.searchValue} onChange={this.handleChange}/>
         </div>
-        <div className="large-2 columns">
+        <div className="large-1 columns">
           <input type="text" name="pace" placeholder="Pace" value={this.props.pace} onChange={this.handleChange}/>
         </div>
         <div className="large-1 columns">
           <button className="button" type='sumbit' name='button'>Search</button>
+        </div>
+        <div className="large-3 columns large-offset-1">
+          <input type="text" placeholder="Playlist Title"/>
         </div>
         <div className="large-2 columns">
           <button className="button" onClick={this.props.export}>Export to Spotify</button>
@@ -41,23 +44,23 @@ var Search = React.createClass({
 
 var SearchResult = React.createClass({
   handleClick: function(event) {
-    this.props.addToPlaylist(this.props.results[event.target.value]);
+    this.props.addToPlaylist(this.props.results[event.currentTarget.value]);
   },
   render: function() {
     var resultElms = this.props.results.map((result, index) => {
       var src = `https://embed.spotify.com/?uri=${result.spotifyTrackId}`
       return <tr key={index}>
+        <td><button value={index} onClick={this.handleClick}><i className="fi-plus"/></button></td>
         <td>{result.title}</td>
         <td>{result.artist}</td>
-        <td> </td>
         <td>{result.bpm}</td>
-        <td><button className="button" value={index} onClick={this.handleClick}>+</button></td>
       </tr>
     });
 
     return <table className="large-6 columns">
       <thead>
         <tr>
+          <th />
           <th>
             Title
           </th>
@@ -65,13 +68,7 @@ var SearchResult = React.createClass({
             Artist
           </th>
           <th>
-            Album
-          </th>
-          <th>
             BPM
-          </th>
-          <th>
-            Add
           </th>
         </tr>
       </thead>
@@ -84,16 +81,16 @@ var SearchResult = React.createClass({
 
 var Playlist = React.createClass({
   handleClick: function(event) {
-    this.props.removeFromPlaylist(event.target.value);
+    console.log(event.target.value);
+    this.props.removeFromPlaylist(event.currentTarget.value);
   },
   render: function() {
     var trackElms = this.props.tracks.map((track, index) => {
       return <tr key={index}>
+        <td><button value={index} onClick={this.handleClick}><i className="fi-minus"/></button></td>
         <td>{track.title}</td>
         <td>{track.artist}</td>
-        <td> </td>
         <td>{track.bpm}</td>
-        <td><button className="button" onClick={this.handleClick}>-</button></td>
       </tr>
     })
 
@@ -101,6 +98,7 @@ var Playlist = React.createClass({
         <table className="large-12 columns">
           <thead>
             <tr>
+              <th />
               <th>
                 Title
               </th>
@@ -108,13 +106,7 @@ var Playlist = React.createClass({
                 Artist
               </th>
               <th>
-                Album
-              </th>
-              <th>
                 BPM
-              </th>
-              <th>
-                Add
               </th>
             </tr>
           </thead>
@@ -156,6 +148,7 @@ var PlaylistBuilder = React.createClass({
   },
   removeFromPlaylist: function(index) {
     var newState = this.state.playlist;
+
     newState.splice(index, 1);
     this.setState({playlist: newState});
   },
