@@ -12,22 +12,5 @@
     <link rel="stylesheet" href="main.css">
   </head>
   <body>
-    <nav class="top-bar" style="margin-bottom: 30px;">
-      <div class="top-bar-left">
-        <ul class="menu">
-          <li class="menu-text">On Your Left</li>
-        </ul>
-      </div>
-      <div class="top-bar-right">
-        <ul class="menu">
-          <li><a href="#">Build a Playlist</a></li>
-          <li><a href="#">View all Playlist</a></li>
-          <li><a href="#">Your Playlist</a></li>
-          <%if(locals.user) { %>
-            <li><a href="/logout">Logout</a></li>
-          <% } else { %>
-            <li><a href="#" id='login'>Login </a></li>
-          <% } %>
-        </ul>
-      </div>
-    </nav>
+    <div id='nav'></div>
+    <script type="text/babel" src="nav.js"></script>
