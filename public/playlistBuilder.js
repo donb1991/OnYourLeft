@@ -4,6 +4,8 @@ var Search = React.createClass({
       this.props.updatePace(event.target.value);
     } else if(event.target.name === 'searchValue') {
       this.props.updateSearchValue(event.target.value);
+    } else if(event.target.name === 'title'){
+      this.props.updateTitle(event.target.value);
     } else {
       this.props.updateSearchBy(event.target.value);
     }
@@ -32,7 +34,7 @@ var Search = React.createClass({
           <button className="button" type='sumbit' name='button'>Search</button>
         </div>
         <div className="large-3 columns large-offset-1">
-          <input type="text" placeholder="Playlist Title"/>
+          <input type="text" placeholder="Playlist Title" value={this.props.title}  name="title" onChange={this.handleChange}/>
         </div>
         <div className="large-2 columns">
           <button className="button" onClick={this.props.export}>Export to Spotify</button>
@@ -131,7 +133,8 @@ var PlaylistBuilder = React.createClass({
       pace: '',
       results: [],
       playlist: [],
-      searchBy: 'artist'
+      searchBy: 'artist',
+      title: ''
     };
   },
   updatePace: function(value) {
@@ -145,6 +148,9 @@ var PlaylistBuilder = React.createClass({
   },
   updateResults: function(value) {
     this.setState({results: value})
+  },
+  updateTitle: function(value) {
+    this.setState({title: value});
   },
   removeFromPlaylist: function(index) {
     var newState = this.state.playlist;
@@ -161,7 +167,10 @@ var PlaylistBuilder = React.createClass({
     $.ajax({
       method: "POST",
       url: "http://localhost:3000/playlist",
-      data: {tracks: this.state.playlist}
+      data: {
+        title: this.state.title,
+        tracks: this.state.playlist
+      }
     });
   },
   render: function() {
@@ -172,9 +181,11 @@ var PlaylistBuilder = React.createClass({
         updatePace={this.updatePace}
         updateSearchBy={this.updateSearchBy}
         updateSearchValue={this.updateSearchValue}
+        updateTitle={this.updateTitle}
         pace={this.state.pace}
         searchValue={this.state.searchValue}
         searchBy={this.state.searchBy}
+        title={this.state.title}
       />
       <div className="row">
         <SearchResult

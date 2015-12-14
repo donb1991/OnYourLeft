@@ -82,7 +82,8 @@ app.get('/callback', function(req, res) {
 
 app.post('/playlist', function(req, res) {
   var tracksIds = [];
-  console.log(req.body);
+  var title = req.body.title;
+  console.log(req.body.title);
   req.body.tracks.forEach((track) => {
     tracksIds.push(track.spotifyTrackId);
   });
@@ -103,11 +104,11 @@ app.post('/playlist', function(req, res) {
           user.refresh_token = body.refresh_token;
           user.token_created = Date.now();
           user.save();
-          exportPlaylist(user, tracksIds);
+          exportPlaylist(user, tracksIds, title);
         }
       });
     } else {
-      exportPlaylist(user, tracksIds);
+      exportPlaylist(user, tracksIds, title);
     }
   });
   res.redirect('/');
@@ -127,7 +128,7 @@ function login(res) {
     }));
 }
 
-function exportPlaylist(user, tracksIds) {
+function exportPlaylist(user, tracksIds, title) {
   var newPlaylist = {};
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists',
@@ -138,7 +139,7 @@ function exportPlaylist(user, tracksIds) {
       "Accept": "application/json"
     },
     body: {
-      'name': "A NEW PLAYLIST ALL",
+      'name': title,
       "public":false
     },
     json: true
