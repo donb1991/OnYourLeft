@@ -15,7 +15,6 @@ window.Search = React.createClass({
     this.props.getTracks();
   },
   handleExport: function(event) {
-    console.log('hello?');
     if(!this.props.isLogin) {
       this.props.login();
     } else {
