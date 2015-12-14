@@ -83,7 +83,6 @@ var SearchResult = React.createClass({
 
 var Playlist = React.createClass({
   handleClick: function(event) {
-    console.log(event.target.value);
     this.props.removeFromPlaylist(event.currentTarget.value);
   },
   render: function() {
@@ -129,8 +128,9 @@ var PlaylistBuilder = React.createClass({
   },
   getInitialState: function() {
     return {
+      bestBPM: 180,
       searchValue: '',
-      pace: '',
+      pace: '7:00',
       results: [],
       playlist: [],
       searchBy: 'artist',
@@ -138,7 +138,19 @@ var PlaylistBuilder = React.createClass({
     };
   },
   updatePace: function(value) {
-    this.setState({pace: value});
+    var bpm = 0;
+    var pace = value.split(':');
+    var sorted;
+    if(pace[0] >= 12) {
+      bpm = 130;
+    } else {
+      bpm = ((12 - pace[0]) * 10) + 130;
+      if(pace[1] >= 30) {
+        bpm -= 5;
+      }
+    }
+    sorted = this.sortTracks(this.state.results, bpm);
+    this.setState({pace: value, bestBPM: bpm, results: sorted});
   },
   updateSearchBy: function(value) {
     this.setState({searchBy: value});
@@ -160,7 +172,8 @@ var PlaylistBuilder = React.createClass({
   },
   getTracks: function() {
     $.get("http://localhost:3000/search?q=" + this.state.searchBy + '=' + this.state.searchValue).done((data) => {
-      this.updateResults(data);
+      var newPlaylist = this.sortTracks(data, this.state.bestBPM);
+      this.updateResults(newPlaylist);
     });
   },
   export: function(event) {
@@ -172,6 +185,16 @@ var PlaylistBuilder = React.createClass({
         tracks: this.state.playlist
       }
     });
+  },
+  sortTracks: function(tracks, bpm) {
+    tracks.sort((a, b) => {
+      if(Math.abs(bpm - a.bpm) <= Math.abs(bpm - b.bpm)) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
+    return tracks;
   },
   render: function() {
     return <div>
