@@ -4,7 +4,7 @@ var db = require('../models');
 var request = require('request');
 
 app.get('/', function(req, res) {
-  res.render('buildPlaylist.ejs');
+  res.render('index.ejs');
 });
 
 app.get('/search', function(req, res) {
