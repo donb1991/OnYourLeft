@@ -10,7 +10,7 @@ window.Playlist = React.createClass({
         <td>{track.artist}</td>
         <td>{track.bpm}</td>
       </tr>
-    })
+    });
 
     return <div className="large-6 columns">
         <table className="large-12 columns">
@@ -32,7 +32,6 @@ window.Playlist = React.createClass({
             {trackElms}
           </tbody>
         </table>
-
       </div>
   }
 });

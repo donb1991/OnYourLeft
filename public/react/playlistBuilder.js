@@ -3,12 +3,12 @@ var PlaylistBuilder = React.createClass({
     var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
     var url = 'https://accounts.spotify.com/authorize?';
     var params = {
-          response_type: 'code',
-          client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
-          scope: scope,
-          redirect_uri: 'http://localhost:3000/callback',
-          show_dialog: true
-        };
+      response_type: 'code',
+      client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
+      scope: scope,
+      redirect_uri: 'http://localhost:3000/callback',
+      show_dialog: true
+    };
     var query = [];
     for (var i in params) {
       query.push(encodeURIComponent(i) + '=' + encodeURIComponent(params[i]));
