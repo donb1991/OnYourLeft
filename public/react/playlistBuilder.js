@@ -93,7 +93,7 @@ var PlaylistBuilder = React.createClass({
     this.setState({playlist: newState});
   },
   getTracks: function() {
-    $.get("http://localhost:3000/search?q=" + this.state.searchBy + '=' + this.state.searchValue).done((data) => {
+    $.get("https://onyourleft.herokuapp.com/search?q=" + this.state.searchBy + '=' + this.state.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       this.updateResults(newPlaylist);
     });
@@ -101,7 +101,7 @@ var PlaylistBuilder = React.createClass({
   export: function(event) {
     $.ajax({
       method: "POST",
-      url: "http://localhost:3000/playlist",
+      url: "https://onyourleft.herokuapp.com/playlist",
       data: {
         title: this.state.title,
         tracks: this.state.playlist
