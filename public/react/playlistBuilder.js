@@ -6,7 +6,7 @@ var PlaylistBuilder = React.createClass({
       response_type: 'code',
       client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
       scope: scope,
-      redirect_uri: "https://onyourleft.herokuapp.com/callback",
+      redirect_uri: "http://localhost:3000/callback",
       show_dialog: true
     };
     var query = [];
@@ -49,14 +49,16 @@ var PlaylistBuilder = React.createClass({
   },
   getInitialState: function() {
     return {
+      userInputs: {
+        searchValue: '',
+        pace: '7:00',
+        searchBy: 'artist',
+        title: ''
+      },
       bestBPM: 180,
-      searchValue: '',
-      pace: '7:00',
       isLogin: false,
       results: [],
       playlist: [],
-      searchBy: 'artist',
-      title: ''
     };
   },
   updatePace: function(value) {
@@ -72,19 +74,15 @@ var PlaylistBuilder = React.createClass({
       }
     }
     sorted = this.sortTracks(this.state.results, bpm);
-    this.setState({pace: value, bestBPM: bpm, results: sorted});
+    this.setState({bestBPM: bpm, results: sorted});
   },
-  updateSearchBy: function(value) {
-    this.setState({searchBy: value});
-  },
-  updateSearchValue: function(value) {
-    this.setState({searchValue: value});
-  },
-  updateResults: function(value) {
-    this.setState({results: value});
-  },
-  updateTitle: function(value) {
-    this.setState({title: value});
+  updateUserInputs: function(name, value) {
+    var newUserInputs = this.state.userInputs;
+    newUserInputs[name] = value;
+    this.setState({userInputs: newUserInputs});
+    if(name === "pace") {
+      updatePace(value);
+    }
   },
   removeFromPlaylist: function(index) {
     var newState = this.state.playlist;
@@ -93,7 +91,7 @@ var PlaylistBuilder = React.createClass({
     this.setState({playlist: newState});
   },
   getTracks: function() {
-    $.get("https://onyourleft.herokuapp.com/search?q=" + this.state.searchBy + '=' + this.state.searchValue).done((data) => {
+    $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       this.updateResults(newPlaylist);
     });
@@ -101,7 +99,7 @@ var PlaylistBuilder = React.createClass({
   export: function(event) {
     $.ajax({
       method: "POST",
-      url: "https://onyourleft.herokuapp.com/playlist",
+      url: "http://localhost:3000/playlist",
       data: {
         title: this.state.title,
         tracks: this.state.playlist
@@ -128,16 +126,10 @@ var PlaylistBuilder = React.createClass({
       <Search
         export={this.export}
         getTracks={this.getTracks}
-        updatePace={this.updatePace}
-        updateSearchBy={this.updateSearchBy}
-        updateSearchValue={this.updateSearchValue}
-        updateTitle={this.updateTitle}
+        updateUserInputs={this.updateUserInputs}
+        userInputs={this.state.userInputs}
         isLogin={this.state.isLogin}
         login={this.login}
-        pace={this.state.pace}
-        searchValue={this.state.searchValue}
-        searchBy={this.state.searchBy}
-        title={this.state.title}
       />
       <div className="row">
         <SearchResult
