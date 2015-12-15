@@ -6,7 +6,7 @@ var PlaylistBuilder = React.createClass({
       response_type: 'code',
       client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
       scope: scope,
-      redirect_uri: 'http://localhost:3000/callback',
+      redirect_uri: "https://onyourleft.herokuapp.com/callback",
       show_dialog: true
     };
     var query = [];
