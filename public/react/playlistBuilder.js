@@ -1,4 +1,4 @@
-var PlaylistBuilder = React.createClass({
+window.PlaylistBuilder = React.createClass({
   addToPlaylist: function(track) {
     var newState = this.state.playlist;
     newState.push(track);
@@ -14,7 +14,6 @@ var PlaylistBuilder = React.createClass({
         title: ''
       },
       bestBPM: 180,
-      isLogin: false,
       results: [],
       playlist: [],
     };
@@ -25,48 +24,6 @@ var PlaylistBuilder = React.createClass({
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       this.updateResults(newPlaylist);
     });
-  },
-
-  login: function() {
-    var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
-    var url = 'https://accounts.spotify.com/authorize?';
-    var params = {
-      response_type: 'code',
-      client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
-      scope: scope,
-      redirect_uri: "http://localhost:3000/callback",
-      show_dialog: true
-    };
-    var query = [];
-    for (var i in params) {
-      query.push(encodeURIComponent(i) + '=' + encodeURIComponent(params[i]));
-    }
-    url += query.join('&');
-
-    var loginWindow = null;
-    var width = 400;
-    var height = 600;
-    var left = (screen.width / 2) - (width / 2);
-    var top = (screen.height / 2) - (height / 2);
-
-    loginWindow = window.open(
-      url,
-      'Spotify',
-      'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + width + ', height=' + height + ', top=' + top + ', left=' + left
-    );
-   var loginWindowClosed = setInterval(() => {
-   if (loginWindow !== null) {
-      if (loginWindow.login) {
-        clearInterval(loginWindowClosed);
-        this.updateIsLogin(true);
-       }
-     }
-   }, 1000);
-  },
-
-  logout: function() {
-   this.setState({isLogin: false});
-   $.get("http://localhost:3000/logout").done();
   },
 
   updateBPM: function(value) {
@@ -119,18 +76,14 @@ var PlaylistBuilder = React.createClass({
 
   render: function() {
     return <div>
-      <Nav
-        isLogin={this.state.isLogin}
-        login={this.login}
-        logout={this.logout}
-      />
       <Search
         export={this.export}
         getTracks={this.getTracks}
         updateUserInputs={this.updateUserInputs}
         userInputs={this.state.userInputs}
-        isLogin={this.state.isLogin}
-        login={this.login}
+        isLogin={this.props.isLogin}
+        login={this.props.login}
+        playlist={this.state.playlist}
       />
       <div className="row">
         <SearchResult
@@ -145,8 +98,3 @@ var PlaylistBuilder = React.createClass({
     </div>
   }
 });
-
-ReactDOM.render(
-  <PlaylistBuilder />,
-  document.getElementById('reactContainer')
-);

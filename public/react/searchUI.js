@@ -5,7 +5,7 @@ window.Search = React.createClass({
       url: "http://localhost:3000/playlist",
       data: {
         title: this.props.userInputs.title,
-        tracks: this.props.userInputs.playlist
+        tracks: this.props.playlist
       }
     });
   },
