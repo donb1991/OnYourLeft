@@ -1,10 +1,13 @@
 window.Playlist = React.createClass({
   handleClick: function(event) {
-    this.props.removeFromPlaylist(event.currentTarget.value);
+    var newTracks = this.props.tracks;
+    newTracks.splice(event.currentTarget.value, 1);
+    this.props.updateTracks(newTracks);
   },
+
   render: function() {
     var trackElms = this.props.tracks.map((track, index) => {
-      return <tr key={index}>
+      return <tr className="track" key={index}>
         <td><button value={index} onClick={this.handleClick}><i className="fi-minus"/></button></td>
         <td>{track.title}</td>
         <td>{track.artist}</td>

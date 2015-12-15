@@ -15,7 +15,7 @@ app.get('/search', function(req, res) {
     var songs = [];
     var newSong = {};
     var jsonSongs = JSON.parse(body).response.songs;
-    if(jsonSongs){
+    if(jsonSongs) {
       for(var i = 0; i < jsonSongs.length; i++) {
         if(jsonSongs[i].tracks.length > 0) {
           newSong.title = jsonSongs[i].title;

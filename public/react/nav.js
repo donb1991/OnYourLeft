@@ -1,7 +1,4 @@
 window.Nav = React.createClass({
-  handleClick: function(event) {
-    this.props.logout();
-  },
   render: function() {
     var menu;
     if(this.props.isLogin){
@@ -9,7 +6,7 @@ window.Nav = React.createClass({
         <li><a href="#">Build a Playlist</a></li>
         <li><a href="#">View all Playlist</a></li>
         <li><a href="#">Your Playlist</a></li>
-        <li><a href="#" onClick={this.handleClick}>Logout</a></li>
+        <li><a href="#" onClick={this.props.logout}>Logout</a></li>
       </ul>
     } else {
       menu = <ul className="menu">

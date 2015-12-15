@@ -1,4 +1,32 @@
 var PlaylistBuilder = React.createClass({
+  addToPlaylist: function(track) {
+    var newState = this.state.playlist;
+    newState.push(track);
+    this.setState({playlist: newState});
+  },
+
+  getInitialState: function() {
+    return {
+      userInputs: {
+        searchValue: '',
+        pace: '7:00',
+        searchBy: 'artist',
+        title: ''
+      },
+      bestBPM: 180,
+      isLogin: false,
+      results: [],
+      playlist: [],
+    };
+  },
+
+  getTracks: function() {
+    $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
+      var newPlaylist = this.sortTracks(data, this.state.bestBPM);
+      this.updateResults(newPlaylist);
+    });
+  },
+
   login: function() {
     var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
     var url = 'https://accounts.spotify.com/authorize?';
@@ -6,7 +34,7 @@ var PlaylistBuilder = React.createClass({
       response_type: 'code',
       client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
       scope: scope,
-      redirect_uri: "https://onyourleft.herokuapp.com/callback",
+      redirect_uri: "http://localhost:3000/callback",
       show_dialog: true
     };
     var query = [];
@@ -35,31 +63,13 @@ var PlaylistBuilder = React.createClass({
      }
    }, 1000);
   },
-  updateIsLogin: function(value){
-   this.setState({isLogin: value});
-  },
+
   logout: function() {
    this.setState({isLogin: false});
    $.get("http://localhost:3000/logout").done();
   },
-  addToPlaylist: function(track) {
-    var newState = this.state.playlist;
-    newState.push(track);
-    this.setState({playlist: newState});
-  },
-  getInitialState: function() {
-    return {
-      bestBPM: 180,
-      searchValue: '',
-      pace: '7:00',
-      isLogin: false,
-      results: [],
-      playlist: [],
-      searchBy: 'artist',
-      title: ''
-    };
-  },
-  updatePace: function(value) {
+
+  updateBPM: function(value) {
     var bpm = 0;
     var pace = value.split(':');
     var sorted;
@@ -72,42 +82,30 @@ var PlaylistBuilder = React.createClass({
       }
     }
     sorted = this.sortTracks(this.state.results, bpm);
-    this.setState({pace: value, bestBPM: bpm, results: sorted});
+    this.setState({bestBPM: bpm, results: sorted});
   },
-  updateSearchBy: function(value) {
-    this.setState({searchBy: value});
-  },
-  updateSearchValue: function(value) {
-    this.setState({searchValue: value});
-  },
-  updateResults: function(value) {
-    this.setState({results: value});
-  },
-  updateTitle: function(value) {
-    this.setState({title: value});
-  },
-  removeFromPlaylist: function(index) {
-    var newState = this.state.playlist;
 
-    newState.splice(index, 1);
-    this.setState({playlist: newState});
+  updateIsLogin: function(value){
+   this.setState({isLogin: value});
   },
-  getTracks: function() {
-    $.get("https://onyourleft.herokuapp.com/search?q=" + this.state.searchBy + '=' + this.state.searchValue).done((data) => {
-      var newPlaylist = this.sortTracks(data, this.state.bestBPM);
-      this.updateResults(newPlaylist);
-    });
+
+  updatePlaylist: function(tracks) {
+    this.setState({playlist: tracks});
   },
-  export: function(event) {
-    $.ajax({
-      method: "POST",
-      url: "https://onyourleft.herokuapp.com/playlist",
-      data: {
-        title: this.state.title,
-        tracks: this.state.playlist
-      }
-    });
+
+  updateResults: function(results) {
+    this.setState({results: results});
   },
+
+  updateUserInputs: function(name, value) {
+    var newUserInputs = this.state.userInputs;
+    newUserInputs[name] = value;
+    this.setState({userInputs: newUserInputs});
+    if(name === "pace") {
+      updateBPM(value);
+    }
+  },
+
   sortTracks: function(tracks, bpm) {
     tracks.sort((a, b) => {
       if(Math.abs(bpm - a.bpm) <= Math.abs(bpm - b.bpm)) {
@@ -118,6 +116,7 @@ var PlaylistBuilder = React.createClass({
     });
     return tracks;
   },
+
   render: function() {
     return <div>
       <Nav
@@ -128,16 +127,10 @@ var PlaylistBuilder = React.createClass({
       <Search
         export={this.export}
         getTracks={this.getTracks}
-        updatePace={this.updatePace}
-        updateSearchBy={this.updateSearchBy}
-        updateSearchValue={this.updateSearchValue}
-        updateTitle={this.updateTitle}
+        updateUserInputs={this.updateUserInputs}
+        userInputs={this.state.userInputs}
         isLogin={this.state.isLogin}
         login={this.login}
-        pace={this.state.pace}
-        searchValue={this.state.searchValue}
-        searchBy={this.state.searchBy}
-        title={this.state.title}
       />
       <div className="row">
         <SearchResult
@@ -146,7 +139,6 @@ var PlaylistBuilder = React.createClass({
         />
         <Playlist
           updateTracks={this.updatePlaylist}
-          removeFromPlaylist={this.removeFromPlaylist}
           tracks={this.state.playlist}
         />
       </div>
