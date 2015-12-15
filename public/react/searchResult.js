@@ -2,6 +2,7 @@ window.SearchResult = React.createClass({
   handleClick: function(event) {
     this.props.addToPlaylist(this.props.results[event.currentTarget.value]);
   },
+
   render: function() {
     var resultElms = this.props.results.map((result, index) => {
       var src = `https://embed.spotify.com/?uri=${result.spotifyTrackId}`

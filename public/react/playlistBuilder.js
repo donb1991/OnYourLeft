@@ -1,4 +1,32 @@
 var PlaylistBuilder = React.createClass({
+  addToPlaylist: function(track) {
+    var newState = this.state.playlist;
+    newState.push(track);
+    this.setState({playlist: newState});
+  },
+
+  getInitialState: function() {
+    return {
+      userInputs: {
+        searchValue: '',
+        pace: '7:00',
+        searchBy: 'artist',
+        title: ''
+      },
+      bestBPM: 180,
+      isLogin: false,
+      results: [],
+      playlist: [],
+    };
+  },
+
+  getTracks: function() {
+    $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
+      var newPlaylist = this.sortTracks(data, this.state.bestBPM);
+      this.updateResults(newPlaylist);
+    });
+  },
+
   login: function() {
     var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
     var url = 'https://accounts.spotify.com/authorize?';
@@ -35,33 +63,13 @@ var PlaylistBuilder = React.createClass({
      }
    }, 1000);
   },
-  updateIsLogin: function(value){
-   this.setState({isLogin: value});
-  },
+
   logout: function() {
    this.setState({isLogin: false});
    $.get("http://localhost:3000/logout").done();
   },
-  addToPlaylist: function(track) {
-    var newState = this.state.playlist;
-    newState.push(track);
-    this.setState({playlist: newState});
-  },
-  getInitialState: function() {
-    return {
-      userInputs: {
-        searchValue: '',
-        pace: '7:00',
-        searchBy: 'artist',
-        title: ''
-      },
-      bestBPM: 180,
-      isLogin: false,
-      results: [],
-      playlist: [],
-    };
-  },
-  updatePace: function(value) {
+
+  updateBPM: function(value) {
     var bpm = 0;
     var pace = value.split(':');
     var sorted;
@@ -76,36 +84,28 @@ var PlaylistBuilder = React.createClass({
     sorted = this.sortTracks(this.state.results, bpm);
     this.setState({bestBPM: bpm, results: sorted});
   },
+
+  updateIsLogin: function(value){
+   this.setState({isLogin: value});
+  },
+
+  updatePlaylist: function(tracks) {
+    this.setState({playlist: tracks});
+  },
+
+  updateResults: function(results) {
+    this.setState({results: results});
+  },
+
   updateUserInputs: function(name, value) {
     var newUserInputs = this.state.userInputs;
     newUserInputs[name] = value;
     this.setState({userInputs: newUserInputs});
     if(name === "pace") {
-      updatePace(value);
+      updateBPM(value);
     }
   },
-  removeFromPlaylist: function(index) {
-    var newState = this.state.playlist;
 
-    newState.splice(index, 1);
-    this.setState({playlist: newState});
-  },
-  getTracks: function() {
-    $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
-      var newPlaylist = this.sortTracks(data, this.state.bestBPM);
-      this.updateResults(newPlaylist);
-    });
-  },
-  export: function(event) {
-    $.ajax({
-      method: "POST",
-      url: "http://localhost:3000/playlist",
-      data: {
-        title: this.state.title,
-        tracks: this.state.playlist
-      }
-    });
-  },
   sortTracks: function(tracks, bpm) {
     tracks.sort((a, b) => {
       if(Math.abs(bpm - a.bpm) <= Math.abs(bpm - b.bpm)) {
@@ -116,6 +116,7 @@ var PlaylistBuilder = React.createClass({
     });
     return tracks;
   },
+
   render: function() {
     return <div>
       <Nav
@@ -138,7 +139,6 @@ var PlaylistBuilder = React.createClass({
         />
         <Playlist
           updateTracks={this.updatePlaylist}
-          removeFromPlaylist={this.removeFromPlaylist}
           tracks={this.state.playlist}
         />
       </div>

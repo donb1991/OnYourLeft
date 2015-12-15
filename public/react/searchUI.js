@@ -1,18 +1,32 @@
 window.Search = React.createClass({
+  export: function(event) {
+    $.ajax({
+      method: "POST",
+      url: "http://localhost:3000/playlist",
+      data: {
+        title: this.props.userInputs.title,
+        tracks: this.props.userInputs.playlist
+      }
+    });
+  },
+
   handleChange: function(event) {
     this.props.updateUserInputs(event.target.name, event.target.value);
   },
+
   handleSubmit: function(event) {
     event.preventDefault();
     this.props.getTracks();
   },
+
   handleExport: function(event) {
     if(!this.props.isLogin) {
       this.props.login();
     } else {
-      this.props.export();
+      this.export();
     }
   },
+
   render: function() {
     return <div className="row">
       <form onSubmit={this.handleSubmit}>

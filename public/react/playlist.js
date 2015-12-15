@@ -1,7 +1,10 @@
 window.Playlist = React.createClass({
   handleClick: function(event) {
-    this.props.removeFromPlaylist(event.currentTarget.value);
+    var newTracks = this.props.tracks;
+    newTracks.splice(event.currentTarget.value, 1);
+    this.props.updateTracks(newTracks);
   },
+
   render: function() {
     var trackElms = this.props.tracks.map((track, index) => {
       return <tr key={index}>
