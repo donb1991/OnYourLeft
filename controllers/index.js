@@ -15,7 +15,6 @@ app.get('/search', function(req, res) {
     var songs = [];
     var newSong = {};
     var jsonSongs = JSON.parse(body).response.songs;
-    console.log(jsonSongs);
     for(var i = 0; i < jsonSongs.length; i++) {
       if(jsonSongs[i].tracks.length > 0) {
         newSong.title = jsonSongs[i].title;
@@ -24,8 +23,6 @@ app.get('/search', function(req, res) {
         newSong.spotifyTrackId = jsonSongs[i].tracks[0].foreign_id;
         songs.push(newSong);
         db.Track.findOneAndUpdate({spotifyTrackId: newSong.spotifyTrackId}, newSong, {upsert: true}, function(err, data) {
-          // console.log(data, err);
-          // songs.push(newSong);
         });
       }
       newSong = {};

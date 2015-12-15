@@ -7,7 +7,7 @@ window.Playlist = React.createClass({
 
   render: function() {
     var trackElms = this.props.tracks.map((track, index) => {
-      return <tr key={index}>
+      return <tr className="track" key={index}>
         <td><button value={index} onClick={this.handleClick}><i className="fi-minus"/></button></td>
         <td>{track.title}</td>
         <td>{track.artist}</td>
