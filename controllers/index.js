@@ -15,19 +15,21 @@ app.get('/search', function(req, res) {
     var songs = [];
     var newSong = {};
     var jsonSongs = JSON.parse(body).response.songs;
-    for(var i = 0; i < jsonSongs.length; i++) {
-      if(jsonSongs[i].tracks.length > 0) {
-        newSong.title = jsonSongs[i].title;
-        newSong.artist = jsonSongs[i].artist_name;
-        newSong.bpm = jsonSongs[i].audio_summary.tempo;
-        newSong.spotifyTrackId = jsonSongs[i].tracks[0].foreign_id;
-        songs.push(newSong);
-        db.Track.findOneAndUpdate({spotifyTrackId: newSong.spotifyTrackId}, newSong, {upsert: true}, function(err, data) {
-          // console.log(data, err);
-          // songs.push(newSong);
-        });
+    if(jsonSongs){
+      for(var i = 0; i < jsonSongs.length; i++) {
+        if(jsonSongs[i].tracks.length > 0) {
+          newSong.title = jsonSongs[i].title;
+          newSong.artist = jsonSongs[i].artist_name;
+          newSong.bpm = jsonSongs[i].audio_summary.tempo;
+          newSong.spotifyTrackId = jsonSongs[i].tracks[0].foreign_id;
+          songs.push(newSong);
+          db.Track.findOneAndUpdate({spotifyTrackId: newSong.spotifyTrackId}, newSong, {upsert: true}, function(err, data) {
+            // console.log(data, err);
+            // songs.push(newSong);
+          });
+        }
+        newSong = {};
       }
-      newSong = {};
     }
     res.send(songs);
   });
