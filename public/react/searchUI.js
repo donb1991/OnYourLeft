@@ -21,7 +21,9 @@ window.Search = React.createClass({
 
   handleExport: function(event) {
     if(!this.props.isLogin) {
-      this.props.login();
+      this.props.login().then(() => {
+        this.export();
+      });
     } else {
       this.export();
     }
