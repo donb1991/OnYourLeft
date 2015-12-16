@@ -5,7 +5,7 @@ window.Search = React.createClass({
       url: "http://localhost:3000/playlist",
       data: {
         title: this.props.userInputs.title,
-        tracks: this.props.userInputs.playlist
+        tracks: this.props.playlist
       }
     });
   },
@@ -21,7 +21,9 @@ window.Search = React.createClass({
 
   handleExport: function(event) {
     if(!this.props.isLogin) {
-      this.props.login();
+      this.props.login().then(() => {
+        this.export();
+      });
     } else {
       this.export();
     }

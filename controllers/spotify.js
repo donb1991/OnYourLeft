@@ -118,6 +118,7 @@ function exportPlaylist(user, tracksIds, title) {
 
   request.post(options, function(error, response, body) {
     if(error) {
+      console.log(error);
     } else {
       newPlaylist.spotifyPlaylistId = body.id;
       newPlaylist.dateCreate = Date.now();
