@@ -1,7 +1,7 @@
 window.BuildPage = React.createClass({
   getInitialState: function() {
     return {
-      isLogin: false
+      isLogin: this.props.isLogin
     };
   },
 
@@ -61,8 +61,3 @@ window.BuildPage = React.createClass({
     </div>
   }
 });
-
-ReactDOM.render(
-  <BuildPage />,
-  document.getElementById('reactContainer')
-);

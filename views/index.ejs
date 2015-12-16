@@ -6,4 +6,12 @@
   <script type="text/babel" src="react/searchUI.js"></script>
   <script type="text/babel" src="react/playlistBuilder.js"></script>
   <script type="text/babel" src="react/buildPage.js"></script>
+  <script type="text/babel">
+    ReactDOM.render(
+      <BuildPage
+        isLogin=<%= locals.user ? '{true}' : '{false}' %>
+      />,
+      document.getElementById('reactContainer')
+    );
+  </script>
 <% include partials/footer %>
