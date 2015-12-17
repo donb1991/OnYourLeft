@@ -6,7 +6,7 @@ var userSchema = mongoose.Schema({
   },
   playlists: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'playlist'
+    ref: 'Playlist'
   }],
   spotifyUserId: {
     type: String
