@@ -33,7 +33,7 @@ var PlaylistBuilder = React.createClass({
   },
 
   getTracks: function() {
-    $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
+    $.get("http://localhost:3000/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
       this.updateResults(newPlaylist);
@@ -92,11 +92,10 @@ var PlaylistBuilder = React.createClass({
   render: function() {
     return <div>
       <Search
-        export={this.export}
         getTracks={this.getTracks}
         updateUserInputs={this.updateUserInputs}
         userInputs={this.state.userInputs}
-        isLogin={this.props.isLogin}
+        user={this.props.user}
         login={this.props.login}
         playlist={this.state.playlist}
       />

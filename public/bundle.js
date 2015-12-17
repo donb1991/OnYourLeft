@@ -62,7 +62,7 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    $.get("http://localhost:3000/users").then(function (data) {
+	    $.get("http://localhost:3000/api/users").then(function (data) {
 	      _this.setState(data);
 	    });
 	  },
@@ -103,7 +103,7 @@
 	        if (loginWindow !== null) {
 	          if (loginWindow.login) {
 	            clearInterval(loginWindowClosed);
-	            $.get("http://localhost:3000/users").then(function (data) {
+	            $.get("http://localhost:3000/api/users").then(function (data) {
 	              _this2.setState(data);
 	            });
 	            resolve(true);
@@ -125,7 +125,12 @@
 	  },
 	
 	  render: function render() {
-	    var children = React.cloneElement(this.props.children, { logout: this.logout, login: this.login, user: this.state.user });
+	    var children;
+	    if (this.props.children) {
+	      children = React.cloneElement(this.props.children, { logout: this.logout, login: this.login, user: this.state.user });
+	    } else {
+	      children = this.props.children;
+	    }
 	    return React.createElement(
 	      'div',
 	      null,
@@ -25181,7 +25186,7 @@
 	  getTracks: function getTracks() {
 	    var _this = this;
 	
-	    $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
+	    $.get("http://localhost:3000/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
 	      var newPlaylist = _this.sortTracks(data, _this.state.bestBPM);
 	      localStorage.setItem('results', JSON.stringify({ results: newPlaylist }));
 	      _this.updateResults(newPlaylist);
@@ -25242,11 +25247,10 @@
 	      'div',
 	      null,
 	      React.createElement(Search, {
-	        'export': this.export,
 	        getTracks: this.getTracks,
 	        updateUserInputs: this.updateUserInputs,
 	        userInputs: this.state.userInputs,
-	        isLogin: this.props.isLogin,
+	        user: this.props.user,
 	        login: this.props.login,
 	        playlist: this.state.playlist
 	      }),
@@ -25287,7 +25291,7 @@
 	  export: function _export(event) {
 	    $.ajax({
 	      method: "POST",
-	      url: "http://localhost:3000/playlist",
+	      url: "http://localhost:3000/api/playlists",
 	      data: {
 	        title: this.props.userInputs.title,
 	        tracks: this.props.playlist

@@ -6,7 +6,7 @@ var Search = React.createClass({
   export: function(event) {
     $.ajax({
       method: "POST",
-      url: "http://localhost:3000/playlist",
+      url: "http://localhost:3000/api/playlists",
       data: {
         title: this.props.userInputs.title,
         tracks: this.props.playlist

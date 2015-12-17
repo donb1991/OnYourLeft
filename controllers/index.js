@@ -7,7 +7,7 @@ app.get('/', function(req, res) {
   res.render('index.ejs');
 });
 
-app.get('/search', function(req, res) {
+app.get('/api/search', function(req, res) {
   var url = encodeURI(`http://developer.echonest.com/api/v4/song/search?api_key=${process.env.ECHONESTAPIKEY}&format=json&start=100&results=100&${req.query.q}&bucket=audio_summary&bucket=id:spotify&bucket=tracks`);
   var newSong = {};
 
@@ -24,8 +24,6 @@ app.get('/search', function(req, res) {
           newSong.spotifyTrackId = jsonSongs[i].tracks[0].foreign_id;
           songs.push(newSong);
           db.Track.findOneAndUpdate({spotifyTrackId: newSong.spotifyTrackId}, newSong, {upsert: true}, function(err, data) {
-            // console.log(data, err);
-            // songs.push(newSong);
           });
         }
         newSong = {};
@@ -36,7 +34,9 @@ app.get('/search', function(req, res) {
 });
 
 
-require('./spotify');
+require('./spotifyAuth.js');
+require('./users.js');
+require('./playlists.js');
 
 app.get('*', function(req, res) {
   res.send("ITS A 404. I think you are lost");

@@ -6,7 +6,7 @@ import { Router, Route, Link } from 'react-router'
 
 var App = React.createClass({
   componentWillMount: function() {
-    $.get("http://localhost:3000/users").then((data => {
+    $.get("http://localhost:3000/api/users").then((data => {
       this.setState(data);
     }));
   },
@@ -48,7 +48,7 @@ var App = React.createClass({
      if (loginWindow !== null) {
         if (loginWindow.login) {
           clearInterval(loginWindowClosed);
-          $.get("http://localhost:3000/users").then((data => {
+          $.get("http://localhost:3000/api/users").then((data => {
             this.setState(data);
           }))
           resolve(true);
@@ -68,7 +68,12 @@ var App = React.createClass({
   },
 
   render: function() {
-    var children = React.cloneElement(this.props.children, {logout: this.logout, login: this.login, user: this.state.user});
+    var children;
+    if(this.props.children) {
+      children = React.cloneElement(this.props.children, {logout: this.logout, login: this.login, user: this.state.user});
+    } else {
+      children = this.props.children;
+    }
     return <div>
       <Nav
         logout={this.logout}
