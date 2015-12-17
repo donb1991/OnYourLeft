@@ -1,6 +1,8 @@
 var React = require('react');
+var loginMixin = require('./login.jsx');
 
 var Search = React.createClass({
+  mixins: [loginMixin],
   export: function(event) {
     $.ajax({
       method: "POST",
@@ -10,6 +12,7 @@ var Search = React.createClass({
         tracks: this.props.playlist
       }
     });
+    localStorage.clear();
   },
 
   handleChange: function(event) {
@@ -23,7 +26,7 @@ var Search = React.createClass({
 
   handleExport: function(event) {
     if(!this.props.isLogin) {
-      this.props.login().then(() => {
+      this.login().then(() => {
         this.export();
       });
     } else {

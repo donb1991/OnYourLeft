@@ -4,9 +4,17 @@ var SearchResult = require('./searchResult.jsx');
 var Playlist = require('./playlist.jsx');
 
 var PlaylistBuilder = React.createClass({
+  componentDidMount: function() {
+    var newState = {
+      results: JSON.parse(localStorage.getItem('results')).results,
+      playlist: JSON.parse(localStorage.getItem('playlist')).playlist
+    };
+    this.setState(newState);
+  },
   addToPlaylist: function(track) {
     var newState = this.state.playlist;
     newState.push(track);
+    localStorage.setItem('playlist', JSON.stringify({playlist: newState}));
     this.setState({playlist: newState});
   },
 
@@ -27,6 +35,7 @@ var PlaylistBuilder = React.createClass({
   getTracks: function() {
     $.get("http://localhost:3000/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
+      localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
       this.updateResults(newPlaylist);
     });
   },
@@ -52,6 +61,7 @@ var PlaylistBuilder = React.createClass({
   },
 
   updatePlaylist: function(tracks) {
+    localStorage.setItem('playlist', JSON.stringify({playlist: tracks}));
     this.setState({playlist: tracks});
   },
 

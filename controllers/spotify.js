@@ -9,6 +9,10 @@ app.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
+app.get('/users', function(req, res) {
+  res.send({users: req.session.id});
+});
+
 app.get('/callback', function(req, res) {
   var code = req.query.code || null;
   var authOptions = {
