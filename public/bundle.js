@@ -59,12 +59,82 @@
 	var App = React.createClass({
 	  displayName: 'App',
 	
+	  componentWillMount: function componentWillMount() {
+	    var _this = this;
+	
+	    $.get("http://localhost:3000/users").then(function (data) {
+	      _this.setState(data);
+	    });
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      user: null
+	    };
+	  },
+	
+	  login: function login() {
+	    var _this2 = this;
+	
+	    var promise = new Promise(function (resolve, reject) {
+	      ;
+	      var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
+	      var url = 'https://accounts.spotify.com/authorize?';
+	      var params = {
+	        response_type: 'code',
+	        client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
+	        scope: scope,
+	        redirect_uri: "http://localhost:3000/callback",
+	        show_dialog: true
+	      };
+	      var query = [];
+	      for (var i in params) {
+	        query.push(encodeURIComponent(i) + '=' + encodeURIComponent(params[i]));
+	      }
+	      url += query.join('&');
+	
+	      var loginWindow = null;
+	      var width = 400;
+	      var height = 600;
+	      var left = screen.width / 2 - width / 2;
+	      var top = screen.height / 2 - height / 2;
+	
+	      loginWindow = window.open(url, 'Spotify', 'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + width + ', height=' + height + ', top=' + top + ', left=' + left);
+	      var loginWindowClosed = setInterval(function () {
+	        if (loginWindow !== null) {
+	          if (loginWindow.login) {
+	            clearInterval(loginWindowClosed);
+	            $.get("http://localhost:3000/users").then(function (data) {
+	              _this2.setState(data);
+	            });
+	            resolve(true);
+	          } else {
+	            resolve(false);
+	          }
+	        }
+	      }, 1000);
+	    });
+	    return promise;
+	  },
+	
+	  logout: function logout() {
+	    var _this3 = this;
+	
+	    $.get("http://localhost:3000/logout").done(function () {
+	      _this3.setState({ user: null });
+	    });
+	  },
+	
 	  render: function render() {
+	    var children = React.cloneElement(this.props.children, { logout: this.logout, login: this.login, user: this.state.user });
 	    return React.createElement(
 	      'div',
 	      null,
-	      React.createElement(Nav, null),
-	      this.props.children
+	      React.createElement(Nav, {
+	        logout: this.logout,
+	        login: this.login,
+	        user: this.state.user
+	      }),
+	      children
 	    );
 	  }
 	});
@@ -25238,8 +25308,8 @@
 	  handleExport: function handleExport(event) {
 	    var _this = this;
 	
-	    if (!this.props.isLogin) {
-	      this.login().then(function () {
+	    if (!this.props.user) {
+	      this.props.login().then(function () {
 	        _this.export();
 	      });
 	    } else {
@@ -25578,13 +25648,12 @@
 	var Nav = React.createClass({
 	  displayName: 'Nav',
 	
-	  mixins: [loginMixin],
 	  handleLogin: function handleLogin() {
-	    this.login().then(function (res, err) {});
+	    this.props.login().then(function (res, err) {});
 	  },
 	  render: function render() {
 	    var menu;
-	    if (this.props.isLogin) {
+	    if (this.props.user) {
 	      menu = React.createElement(
 	        'ul',
 	        { className: 'menu' },

@@ -10,7 +10,7 @@ app.get('/logout', function(req, res) {
 });
 
 app.get('/users', function(req, res) {
-  res.send({users: req.session.id});
+  res.send({user: req.session.id});
 });
 
 app.get('/callback', function(req, res) {

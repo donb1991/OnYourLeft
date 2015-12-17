@@ -3,15 +3,14 @@ import { Link } from 'react-router'
 var loginMixin = require('./login.jsx');
 
 var Nav = React.createClass({
-  mixins: [loginMixin],
   handleLogin: function(){
-    this.login().then((res, err) => {
+    this.props.login().then((res, err) => {
 
     });
   },
   render: function() {
     var menu;
-    if(this.props.isLogin){
+    if(this.props.user){
       menu = <ul className="menu">
         <li><Link to='/playlists/new'>Build a Playlist</Link></li>
         <li><Link to='/playlists'>View all Playlist</Link></li>

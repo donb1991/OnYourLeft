@@ -25,8 +25,8 @@ var Search = React.createClass({
   },
 
   handleExport: function(event) {
-    if(!this.props.isLogin) {
-      this.login().then(() => {
+    if(!this.props.user) {
+      this.props.login().then(() => {
         this.export();
       });
     } else {
