@@ -1,9 +1,17 @@
 var db = require('../models');
 var request = require('request');
 
-// app.get('/playlists/new', function(req, res) {
-//   res.render("injex.js");
-// });
+app.get('/api/playlists/', function(req, res) {
+  db.Playlist.find({}, function(err, playlists) {
+    res.send(playlist);
+  })
+});
+
+app.get('/api/playlists/:id', function(req, res) {
+  db.Playlist.findOne({spotifyPlaylistId: req.params.id}).populate('tracks').exec(function(err, playlist) {
+    res.send(playlist);
+  });
+});
 
 app.post('/api/playlists', function(req, res) {
   var tracksIds = [];
