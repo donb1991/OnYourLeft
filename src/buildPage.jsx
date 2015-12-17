@@ -1,4 +1,9 @@
-window.BuildPage = React.createClass({
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Nav = require('./nav.jsx');
+var PlaylistBuilder = require('./PlaylistBuilder.jsx');
+
+var BuildPage = React.createClass({
   getInitialState: function() {
     return {
       isLogin: this.props.isLogin
@@ -67,3 +72,5 @@ window.BuildPage = React.createClass({
     </div>
   }
 });
+
+module.exports = BuildPage;

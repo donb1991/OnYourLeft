@@ -1,4 +1,6 @@
-window.SearchResult = React.createClass({
+var React = require('react');
+
+var SearchResult = React.createClass({
   handleClick: function(event) {
     this.props.addToPlaylist(this.props.results[event.currentTarget.value]);
   },
@@ -35,3 +37,5 @@ window.SearchResult = React.createClass({
     </table>
   }
 });
+
+module.exports = SearchResult;

@@ -1,4 +1,9 @@
-window.PlaylistBuilder = React.createClass({
+var React = require('react');
+var Search = require('./searchUI.jsx');
+var SearchResult = require('./searchResult.jsx');
+var Playlist = require('./playlist.jsx');
+
+var PlaylistBuilder = React.createClass({
   addToPlaylist: function(track) {
     var newState = this.state.playlist;
     newState.push(track);
@@ -98,3 +103,5 @@ window.PlaylistBuilder = React.createClass({
     </div>
   }
 });
+
+module.exports = PlaylistBuilder;

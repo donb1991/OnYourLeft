@@ -1,4 +1,6 @@
-window.Playlist = React.createClass({
+var React = require('react');
+
+var Playlist = React.createClass({
   handleClick: function(event) {
     var newTracks = this.props.tracks;
     newTracks.splice(event.currentTarget.value, 1);
@@ -38,3 +40,5 @@ window.Playlist = React.createClass({
       </div>
   }
 });
+
+module.exports = Playlist;

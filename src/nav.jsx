@@ -1,4 +1,6 @@
-window.Nav = React.createClass({
+var React = require('react');
+
+var Nav = React.createClass({
   render: function() {
     var menu;
     if(this.props.isLogin){
@@ -27,3 +29,5 @@ window.Nav = React.createClass({
     </nav>
   }
 });
+
+module.exports = Nav;

@@ -1,4 +1,6 @@
-window.Search = React.createClass({
+var React = require('react');
+
+var Search = React.createClass({
   export: function(event) {
     $.ajax({
       method: "POST",
@@ -58,3 +60,5 @@ window.Search = React.createClass({
     </div>
   }
 });
+
+module.exports = Search;
