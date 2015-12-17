@@ -1,6 +1,5 @@
 var React = require('react');
 import { Link } from 'react-router'
-var loginMixin = require('./login.jsx');
 
 var Nav = React.createClass({
   handleLogin: function(){
@@ -12,14 +11,14 @@ var Nav = React.createClass({
     var menu;
     if(this.props.user){
       menu = <ul className="menu">
-        <li><Link to='/playlists/new'>Build a Playlist</Link></li>
+        <li><Link to='/'>Build a Playlist</Link></li>
         <li><Link to='/playlists'>View all Playlist</Link></li>
         <li><Link to='/playlists/1'>Your Playlist</Link></li>
         <li><a onClick={this.props.logout}>Logout</a></li>
       </ul>
     } else {
       menu = <ul className="menu">
-        <li><Link to='/playlists/new'>Build a Playlist</Link></li>
+        <li><Link to='/'>Build a Playlist</Link></li>
         <li><Link to='/playlists'>View all Playlist</Link></li>
         <li><a id='login' onClick={this.handleLogin}>Login</a></li>
       </ul>

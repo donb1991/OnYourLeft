@@ -1,8 +1,6 @@
 var React = require('react');
-var loginMixin = require('./login.jsx');
 
 var Search = React.createClass({
-  mixins: [loginMixin],
   export: function(event) {
     $.ajax({
       method: "POST",

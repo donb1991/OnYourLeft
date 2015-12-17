@@ -150,7 +150,7 @@
 	  React.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: App },
-	    React.createElement(_reactRouter.Route, { path: '/playlists/new', component: PlaylistBuilder }),
+	    React.createElement(_reactRouter.IndexRoute, { component: PlaylistBuilder }),
 	    React.createElement(_reactRouter.Route, { path: '/playlists' }),
 	    React.createElement(_reactRouter.Route, { path: '/playlists/:id' }),
 	    React.createElement(_reactRouter.Route, { path: '/users/:userId/playlists/:id' })
@@ -25279,15 +25279,13 @@
   \**************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	var React = __webpack_require__(/*! react */ 5);
-	var loginMixin = __webpack_require__(/*! ./login.jsx */ 212);
 	
 	var Search = React.createClass({
-	  displayName: 'Search',
+	  displayName: "Search",
 	
-	  mixins: [loginMixin],
 	  export: function _export(event) {
 	    $.ajax({
 	      method: "POST",
@@ -25323,65 +25321,65 @@
 	
 	  render: function render() {
 	    return React.createElement(
-	      'div',
-	      { className: 'row' },
+	      "div",
+	      { className: "row" },
 	      React.createElement(
-	        'form',
+	        "form",
 	        { onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'div',
-	          { className: 'large-1 columns' },
+	          "div",
+	          { className: "large-1 columns" },
 	          React.createElement(
-	            'select',
-	            { value: this.props.userInputs.searchBy, name: 'searchBy', onChange: this.handleChange },
+	            "select",
+	            { value: this.props.userInputs.searchBy, name: "searchBy", onChange: this.handleChange },
 	            React.createElement(
-	              'option',
-	              { value: 'artist' },
-	              'Artist'
+	              "option",
+	              { value: "artist" },
+	              "Artist"
 	            ),
 	            React.createElement(
-	              'option',
-	              { value: 'style' },
-	              'Genre'
+	              "option",
+	              { value: "style" },
+	              "Genre"
 	            ),
 	            React.createElement(
-	              'option',
-	              { value: 'title' },
-	              'Title'
+	              "option",
+	              { value: "title" },
+	              "Title"
 	            )
 	          )
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'large-3 columns' },
-	          React.createElement('input', { type: 'text', name: 'searchValue', placeholder: 'Search', value: this.props.userInputs.searchValue, onChange: this.handleChange })
+	          "div",
+	          { className: "large-3 columns" },
+	          React.createElement("input", { type: "text", name: "searchValue", placeholder: "Search", value: this.props.userInputs.searchValue, onChange: this.handleChange })
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'large-1 columns' },
-	          React.createElement('input', { type: 'text', name: 'pace', placeholder: 'Pace', value: this.props.userInputs.pace, onChange: this.handleChange })
+	          "div",
+	          { className: "large-1 columns" },
+	          React.createElement("input", { type: "text", name: "pace", placeholder: "Pace", value: this.props.userInputs.pace, onChange: this.handleChange })
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'large-1 columns' },
+	          "div",
+	          { className: "large-1 columns" },
 	          React.createElement(
-	            'button',
-	            { className: 'button', type: 'sumbit', name: 'button' },
-	            'Search'
+	            "button",
+	            { className: "button", type: "sumbit", name: "button" },
+	            "Search"
 	          )
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'large-3 columns large-offset-1' },
-	          React.createElement('input', { type: 'text', placeholder: 'Playlist Title', value: this.props.userInputs.title, name: 'title', onChange: this.handleChange })
+	          "div",
+	          { className: "large-3 columns large-offset-1" },
+	          React.createElement("input", { type: "text", placeholder: "Playlist Title", value: this.props.userInputs.title, name: "title", onChange: this.handleChange })
 	        ),
 	        React.createElement(
-	          'div',
-	          { className: 'large-2 columns' },
+	          "div",
+	          { className: "large-2 columns" },
 	          React.createElement(
-	            'button',
-	            { className: 'button', onClick: this.handleExport },
-	            'Export to Spotify'
+	            "button",
+	            { className: "button", onClick: this.handleExport },
+	            "Export to Spotify"
 	          )
 	        )
 	      )
@@ -25392,62 +25390,7 @@
 	module.exports = Search;
 
 /***/ },
-/* 212 */
-/*!***********************!*\
-  !*** ./src/login.jsx ***!
-  \***********************/
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	var setLoginMixin = {
-	  login: function login() {
-	    var promise = new Promise(function (resolve, reject) {
-	      ;
-	      var scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private';
-	      var url = 'https://accounts.spotify.com/authorize?';
-	      var params = {
-	        response_type: 'code',
-	        client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
-	        scope: scope,
-	        redirect_uri: "http://localhost:3000/callback",
-	        show_dialog: true
-	      };
-	      var query = [];
-	      for (var i in params) {
-	        query.push(encodeURIComponent(i) + '=' + encodeURIComponent(params[i]));
-	      }
-	      url += query.join('&');
-	
-	      var loginWindow = null;
-	      var width = 400;
-	      var height = 600;
-	      var left = screen.width / 2 - width / 2;
-	      var top = screen.height / 2 - height / 2;
-	
-	      loginWindow = window.open(url, 'Spotify', 'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + width + ', height=' + height + ', top=' + top + ', left=' + left);
-	      var loginWindowClosed = setInterval(function () {
-	        if (loginWindow !== null) {
-	          if (loginWindow.login) {
-	            clearInterval(loginWindowClosed);
-	            resolve(true);
-	          } else {
-	            resolve(false);
-	          }
-	        }
-	      }, 1000);
-	    });
-	    return promise;
-	  },
-	
-	  logout: function logout() {
-	    $.get("http://localhost:3000/logout").done();
-	  }
-	};
-	
-	module.exports = setLoginMixin;
-
-/***/ },
+/* 212 */,
 /* 213 */
 /*!******************************!*\
   !*** ./src/searchResult.jsx ***!
@@ -25647,8 +25590,6 @@
 	
 	var React = __webpack_require__(/*! react */ 5);
 	
-	var loginMixin = __webpack_require__(/*! ./login.jsx */ 212);
-	
 	var Nav = React.createClass({
 	  displayName: 'Nav',
 	
@@ -25666,7 +25607,7 @@
 	          null,
 	          React.createElement(
 	            _reactRouter.Link,
-	            { to: '/playlists/new' },
+	            { to: '/' },
 	            'Build a Playlist'
 	          )
 	        ),
@@ -25707,7 +25648,7 @@
 	          null,
 	          React.createElement(
 	            _reactRouter.Link,
-	            { to: '/playlists/new' },
+	            { to: '/' },
 	            'Build a Playlist'
 	          )
 	        ),
