@@ -21,6 +21,6 @@ var trackSchema = mongoose.Schema({
   }
 });
 
-var Track = mongoose.model('track', trackSchema);
+var Track = mongoose.model('Track', trackSchema);
 
 module.exports = Track;

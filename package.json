@@ -22,7 +22,8 @@
   "devDependencies": {
     "babel-loader": "^6.2.0",
     "mocha": "^2.3.4",
-    "webpack": "^1.12.9"
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
   },
   "scripts": {
     "test": "mocha"

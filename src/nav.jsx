@@ -1,20 +1,26 @@
 var React = require('react');
+import { Link } from 'react-router'
 
 var Nav = React.createClass({
+  handleLogin: function(){
+    this.props.login().then((res, err) => {
+
+    });
+  },
   render: function() {
     var menu;
-    if(this.props.isLogin){
+    if(this.props.user){
       menu = <ul className="menu">
-        <li><a href="#">Build a Playlist</a></li>
-        <li><a href="#">View all Playlist</a></li>
-        <li><a href="#">Your Playlist</a></li>
-        <li><a href="#" onClick={this.props.logout}>Logout</a></li>
+        <li><Link to='/'>Build a Playlist</Link></li>
+        <li><Link to='/playlists'>View all Playlist</Link></li>
+        <li><Link to='/playlists/1'>Your Playlist</Link></li>
+        <li><a onClick={this.props.logout}>Logout</a></li>
       </ul>
     } else {
       menu = <ul className="menu">
-        <li><a href="#">Build a Playlist</a></li>
-        <li><a href="#">View all Playlist</a></li>
-        <li><a href="#" id='login' onClick={this.props.login}>Login</a></li>
+        <li><Link to='/'>Build a Playlist</Link></li>
+        <li><Link to='/playlists'>View all Playlist</Link></li>
+        <li><a id='login' onClick={this.handleLogin}>Login</a></li>
       </ul>
     }
     return <nav className="top-bar" style={{"marginBottom": "30px"}}>

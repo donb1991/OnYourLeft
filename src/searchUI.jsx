@@ -4,12 +4,13 @@ var Search = React.createClass({
   export: function(event) {
     $.ajax({
       method: "POST",
-      url: "http://localhost:3000/playlist",
+      url: "http://localhost:3000/api/playlists",
       data: {
         title: this.props.userInputs.title,
         tracks: this.props.playlist
       }
     });
+    localStorage.clear();
   },
 
   handleChange: function(event) {
@@ -22,7 +23,7 @@ var Search = React.createClass({
   },
 
   handleExport: function(event) {
-    if(!this.props.isLogin) {
+    if(!this.props.user) {
       this.props.login().then(() => {
         this.export();
       });
