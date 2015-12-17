@@ -3,6 +3,7 @@ body {
   border: 0px;
 }
 
+
 .top-bar {
   background-color: #212121;
 }
@@ -38,4 +39,8 @@ tr {
 
 .track:nth-child(even) {
   background-color: #373737;
+}
+
+h4 {
+  color: #D7D8DE;
 }

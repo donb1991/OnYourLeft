@@ -25173,7 +25173,7 @@
 	    return {
 	      userInputs: {
 	        searchValue: '',
-	        pace: '7:00',
+	        pace: '',
 	        searchBy: 'artist',
 	        title: ''
 	      },
@@ -25322,64 +25322,103 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { className: "row" },
+	      { className: "row", style: { "marginBottom": "30px" } },
 	      React.createElement(
-	        "form",
-	        { onSubmit: this.handleSubmit },
+	        "div",
+	        { className: "large-8 columns large-offset-2", onSubmit: this.handleSubmit, style: { backgroundColor: "#212121", padding: "20px" } },
 	        React.createElement(
 	          "div",
-	          { className: "large-1 columns" },
+	          { className: "row columns" },
 	          React.createElement(
-	            "select",
-	            { value: this.props.userInputs.searchBy, name: "searchBy", onChange: this.handleChange },
+	            "h4",
+	            null,
+	            "How fast are you?"
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "row" },
+	          React.createElement(
+	            "div",
+	            { className: "large-4 columns" },
+	            React.createElement("input", { type: "text", name: "pace", placeholder: "Minutes per Mile", value: this.props.userInputs.pace, onChange: this.handleChange })
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          { className: "row columns" },
+	          React.createElement(
+	            "h4",
+	            null,
+	            "What music do you like?"
+	          )
+	        ),
+	        React.createElement(
+	          "form",
+	          { className: "row" },
+	          React.createElement(
+	            "div",
+	            { className: "large-2 columns" },
 	            React.createElement(
-	              "option",
-	              { value: "artist" },
-	              "Artist"
-	            ),
+	              "select",
+	              { value: this.props.userInputs.searchBy, name: "searchBy", onChange: this.handleChange },
+	              React.createElement(
+	                "option",
+	                { value: "artist" },
+	                "Artist"
+	              ),
+	              React.createElement(
+	                "option",
+	                { value: "style" },
+	                "Genre"
+	              ),
+	              React.createElement(
+	                "option",
+	                { value: "title" },
+	                "Title"
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "large-8 columns" },
+	            React.createElement("input", { type: "text", name: "searchValue", placeholder: "Search", value: this.props.userInputs.searchValue, onChange: this.handleChange })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "large-2 columns" },
 	            React.createElement(
-	              "option",
-	              { value: "style" },
-	              "Genre"
-	            ),
-	            React.createElement(
-	              "option",
-	              { value: "title" },
-	              "Title"
+	              "button",
+	              { className: "button", type: "sumbit", name: "button" },
+	              "Search"
 	            )
 	          )
 	        ),
 	        React.createElement(
 	          "div",
-	          { className: "large-3 columns" },
-	          React.createElement("input", { type: "text", name: "searchValue", placeholder: "Search", value: this.props.userInputs.searchValue, onChange: this.handleChange })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-1 columns" },
-	          React.createElement("input", { type: "text", name: "pace", placeholder: "Pace", value: this.props.userInputs.pace, onChange: this.handleChange })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-1 columns" },
+	          { className: "row" },
 	          React.createElement(
-	            "button",
-	            { className: "button", type: "sumbit", name: "button" },
-	            "Search"
+	            "h4",
+	            { className: "columns" },
+	            "Name your playlist"
 	          )
 	        ),
 	        React.createElement(
 	          "div",
-	          { className: "large-3 columns large-offset-1" },
-	          React.createElement("input", { type: "text", placeholder: "Playlist Title", value: this.props.userInputs.title, name: "title", onChange: this.handleChange })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-2 columns" },
+	          { className: "row" },
 	          React.createElement(
-	            "button",
-	            { className: "button", onClick: this.handleExport },
-	            "Export to Spotify"
+	            "div",
+	            { className: "large-9 columns" },
+	            React.createElement("input", { type: "text", placeholder: "Playlist Title", value: this.props.userInputs.title, name: "title", onChange: this.handleChange })
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "large-3 columns" },
+	            React.createElement(
+	              "button",
+	              { className: "button", onClick: this.handleExport },
+	              "Export to Spotify"
+	            )
 	          )
 	        )
 	      )
@@ -25445,7 +25484,7 @@
 	
 	    return React.createElement(
 	      "table",
-	      { className: "large-6 columns" },
+	      { className: "large-7 columns" },
 	      React.createElement(
 	        "thead",
 	        null,
@@ -25526,18 +25565,13 @@
 	          "td",
 	          null,
 	          track.artist
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          track.bpm
 	        )
 	      );
 	    });
 	
 	    return React.createElement(
 	      "div",
-	      { className: "large-6 columns" },
+	      { className: "large-5 columns" },
 	      React.createElement(
 	        "table",
 	        { className: "large-12 columns" },
@@ -25557,11 +25591,6 @@
 	              "th",
 	              null,
 	              "Artist"
-	            ),
-	            React.createElement(
-	              "th",
-	              null,
-	              "BPM"
 	            )
 	          )
 	        ),

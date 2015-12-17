@@ -22,7 +22,7 @@ var PlaylistBuilder = React.createClass({
     return {
       userInputs: {
         searchValue: '',
-        pace: '7:00',
+        pace: '',
         searchBy: 'artist',
         title: ''
       },

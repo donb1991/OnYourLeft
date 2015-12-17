@@ -13,11 +13,10 @@ var Playlist = React.createClass({
         <td><button value={index} onClick={this.handleClick}><i className="fi-minus"/></button></td>
         <td>{track.title}</td>
         <td>{track.artist}</td>
-        <td>{track.bpm}</td>
       </tr>
     });
 
-    return <div className="large-6 columns">
+    return <div className="large-5 columns">
         <table className="large-12 columns">
           <thead>
             <tr>
@@ -27,9 +26,6 @@ var Playlist = React.createClass({
               </th>
               <th>
                 Artist
-              </th>
-              <th>
-                BPM
               </th>
             </tr>
           </thead>
