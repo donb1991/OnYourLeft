@@ -25325,7 +25325,7 @@
 	      { className: "row", style: { "marginBottom": "30px" } },
 	      React.createElement(
 	        "div",
-	        { className: "large-8 columns large-offset-2", onSubmit: this.handleSubmit, style: { backgroundColor: "#212121", padding: "20px" } },
+	        { className: "large-8 columns large-offset-2 guideContainer", onSubmit: this.handleSubmit, style: { backgroundColor: "#212121", padding: "20px" } },
 	        React.createElement(
 	          "div",
 	          { className: "row columns" },
@@ -25484,7 +25484,7 @@
 	
 	    return React.createElement(
 	      "table",
-	      { className: "large-7 columns" },
+	      { className: "large-7 columns results" },
 	      React.createElement(
 	        "thead",
 	        null,

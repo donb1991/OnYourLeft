@@ -34,7 +34,7 @@ var Search = React.createClass({
 
   render: function() {
     return <div className="row" style={{"marginBottom": "30px"}}>
-      <div className="large-8 columns large-offset-2" onSubmit={this.handleSubmit} style={{backgroundColor: "#212121", padding: "20px"}}>
+      <div className="large-8 columns large-offset-2 guideContainer" onSubmit={this.handleSubmit} style={{backgroundColor: "#212121", padding: "20px"}}>
         <div className="row columns">
           <h4>How fast are you?</h4>
         </div>
