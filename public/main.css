@@ -3,6 +3,7 @@ body {
   border: 0px;
 }
 
+
 .top-bar {
   background-color: #212121;
 }
@@ -12,16 +13,19 @@ body {
   color: #87888B;
 }
 
+table {
+}
+
 thead {
   background-color: #121314;
   color: #87888B;
-  border: 0px;
+  border: none;
 }
 
 tbody {
   background-color: #121314;
   color: #D7D8DE;
-  border: 0px;
+  border: none;
 }
 
 .button {
@@ -38,4 +42,18 @@ tr {
 
 .track:nth-child(even) {
   background-color: #373737;
+}
+
+h4 {
+  color: #D7D8DE;
+}
+
+.guideContainer {
+  background-color: #212121;
+  padding: 20px;
+  box-shadow: 0px 2px 6px 1px #373737;
+}
+
+.results {
+
 }

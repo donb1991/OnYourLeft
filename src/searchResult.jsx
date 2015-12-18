@@ -16,7 +16,7 @@ var SearchResult = React.createClass({
       </tr>
     });
 
-    return <table className="large-6 columns">
+    return <table className="large-7 columns results">
       <thead>
         <tr>
           <th />

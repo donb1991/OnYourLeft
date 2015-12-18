@@ -25156,10 +25156,13 @@
 	  displayName: 'PlaylistBuilder',
 	
 	  componentDidMount: function componentDidMount() {
-	    var newState = {
-	      results: JSON.parse(localStorage.getItem('results')).results,
-	      playlist: JSON.parse(localStorage.getItem('playlist')).playlist
-	    };
+	    var newState = {};
+	    if (localStorage.getItem('results')) {
+	      newState.results = JSON.parse(localStorage.getItem('results')).results;
+	    }
+	    if (localStorage.getItem('playlist')) {
+	      newState.playlist = JSON.parse(localStorage.getItem('playlist')).playlist;
+	    }
 	    this.setState(newState);
 	  },
 	  addToPlaylist: function addToPlaylist(track) {
@@ -25173,7 +25176,7 @@
 	    return {
 	      userInputs: {
 	        searchValue: '',
-	        pace: '7:00',
+	        pace: '',
 	        searchBy: 'artist',
 	        title: ''
 	      },
@@ -25227,7 +25230,7 @@
 	    newUserInputs[name] = value;
 	    this.setState({ userInputs: newUserInputs });
 	    if (name === "pace") {
-	      updateBPM(value);
+	      this.updateBPM(value);
 	    }
 	  },
 	
@@ -25279,13 +25282,26 @@
   \**************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	var React = __webpack_require__(/*! react */ 5);
 	
 	var Search = React.createClass({
-	  displayName: "Search",
+	  displayName: 'Search',
 	
+	  getInitialState: function getInitialState() {
+	    if (localStorage.getItem('results') || localStorage.getItem('playlist')) {
+	      return {
+	        step2: false,
+	        step3: false
+	      };
+	    } else {
+	      return {
+	        step2: true,
+	        step3: true
+	      };
+	    }
+	  },
 	  export: function _export(event) {
 	    $.ajax({
 	      method: "POST",
@@ -25299,20 +25315,33 @@
 	  },
 	
 	  handleChange: function handleChange(event) {
+	    var _this = this;
+	    var timeout;
+	    function updateState() {
+	      $(".step2").fadeIn("slow");
+	      _this.setState({ step2: false });
+	      window.clearTimeout(timeout);
+	    }
 	    this.props.updateUserInputs(event.target.name, event.target.value);
+	
+	    if (event.target.className === "step1") {
+	      timeout = window.setTimeout(updateState, 600);
+	    }
 	  },
 	
 	  handleSubmit: function handleSubmit(event) {
 	    event.preventDefault();
+	    $(".step3").fadeIn("slow");
+	    this.setState({ step3: false });
 	    this.props.getTracks();
 	  },
 	
 	  handleExport: function handleExport(event) {
-	    var _this = this;
+	    var _this2 = this;
 	
 	    if (!this.props.user) {
 	      this.props.login().then(function () {
-	        _this.export();
+	        _this2.export();
 	      });
 	    } else {
 	      this.export();
@@ -25321,65 +25350,112 @@
 	
 	  render: function render() {
 	    return React.createElement(
-	      "div",
-	      { className: "row" },
+	      'div',
+	      { className: 'row', style: { "marginBottom": "30px" } },
 	      React.createElement(
-	        "form",
-	        { onSubmit: this.handleSubmit },
+	        'div',
+	        { className: 'large-8 columns large-offset-2 guideContainer', style: { backgroundColor: "#212121", padding: "20px" } },
 	        React.createElement(
-	          "div",
-	          { className: "large-1 columns" },
+	          'div',
+	          { className: 'row columns' },
 	          React.createElement(
-	            "select",
-	            { value: this.props.userInputs.searchBy, name: "searchBy", onChange: this.handleChange },
+	            'h4',
+	            null,
+	            'How fast are you?'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          React.createElement(
+	            'div',
+	            { className: 'large-4 columns' },
+	            React.createElement('input', { className: 'step1', type: 'text', name: 'pace', placeholder: 'Minutes per Mile', value: this.props.userInputs.pace, onChange: this.handleChange })
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'step2', hidden: this.state.step2 },
+	          React.createElement(
+	            'div',
+	            { className: 'row columns' },
 	            React.createElement(
-	              "option",
-	              { value: "artist" },
-	              "Artist"
+	              'h4',
+	              null,
+	              'What music do you like?'
+	            )
+	          ),
+	          React.createElement(
+	            'form',
+	            { className: 'row', onSubmit: this.handleSubmit },
+	            React.createElement(
+	              'div',
+	              { className: 'large-2 columns' },
+	              React.createElement(
+	                'select',
+	                { value: this.props.userInputs.searchBy, name: 'searchBy', onChange: this.handleChange },
+	                React.createElement(
+	                  'option',
+	                  { value: 'artist' },
+	                  'Artist'
+	                ),
+	                React.createElement(
+	                  'option',
+	                  { value: 'style' },
+	                  'Genre'
+	                ),
+	                React.createElement(
+	                  'option',
+	                  { value: 'title' },
+	                  'Title'
+	                )
+	              )
 	            ),
 	            React.createElement(
-	              "option",
-	              { value: "style" },
-	              "Genre"
+	              'div',
+	              { className: 'large-8 columns' },
+	              React.createElement('input', { type: 'text', name: 'searchValue', placeholder: 'Search', value: this.props.userInputs.searchValue, onChange: this.handleChange })
 	            ),
 	            React.createElement(
-	              "option",
-	              { value: "title" },
-	              "Title"
+	              'div',
+	              { className: 'large-2 columns' },
+	              React.createElement(
+	                'button',
+	                { className: 'button', type: 'sumbit', name: 'button' },
+	                'Search'
+	              )
 	            )
 	          )
 	        ),
 	        React.createElement(
-	          "div",
-	          { className: "large-3 columns" },
-	          React.createElement("input", { type: "text", name: "searchValue", placeholder: "Search", value: this.props.userInputs.searchValue, onChange: this.handleChange })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-1 columns" },
-	          React.createElement("input", { type: "text", name: "pace", placeholder: "Pace", value: this.props.userInputs.pace, onChange: this.handleChange })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-1 columns" },
+	          'div',
+	          { className: 'step3', hidden: this.state.step3 },
 	          React.createElement(
-	            "button",
-	            { className: "button", type: "sumbit", name: "button" },
-	            "Search"
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-3 columns large-offset-1" },
-	          React.createElement("input", { type: "text", placeholder: "Playlist Title", value: this.props.userInputs.title, name: "title", onChange: this.handleChange })
-	        ),
-	        React.createElement(
-	          "div",
-	          { className: "large-2 columns" },
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'h4',
+	              { className: 'columns' },
+	              'Name your playlist'
+	            )
+	          ),
 	          React.createElement(
-	            "button",
-	            { className: "button", onClick: this.handleExport },
-	            "Export to Spotify"
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'large-9 columns' },
+	              React.createElement('input', { type: 'text', placeholder: 'Playlist Title', value: this.props.userInputs.title, name: 'title', onChange: this.handleChange })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'large-3 columns' },
+	              React.createElement(
+	                'button',
+	                { className: 'button', onClick: this.handleExport },
+	                'Export to Spotify'
+	              )
+	            )
 	          )
 	        )
 	      )
@@ -25445,7 +25521,7 @@
 	
 	    return React.createElement(
 	      "table",
-	      { className: "large-6 columns" },
+	      { className: "large-7 columns results" },
 	      React.createElement(
 	        "thead",
 	        null,
@@ -25526,18 +25602,13 @@
 	          "td",
 	          null,
 	          track.artist
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          track.bpm
 	        )
 	      );
 	    });
 	
 	    return React.createElement(
 	      "div",
-	      { className: "large-6 columns" },
+	      { className: "large-5 columns" },
 	      React.createElement(
 	        "table",
 	        { className: "large-12 columns" },
@@ -25557,11 +25628,6 @@
 	              "th",
 	              null,
 	              "Artist"
-	            ),
-	            React.createElement(
-	              "th",
-	              null,
-	              "BPM"
 	            )
 	          )
 	        ),
