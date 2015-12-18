@@ -19,6 +19,9 @@ var playlistSchema = mongoose.Schema({
   spotifyPlaylistId: {
     type: String
   },
+  image: {
+    type: String
+  },
   stars: {
     type: Number
   },

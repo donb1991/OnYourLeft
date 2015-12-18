@@ -54,7 +54,7 @@
 	var React = __webpack_require__(/*! react */ 5);
 	var ReactDOM = __webpack_require__(/*! react-dom */ 209);
 	var PlaylistBuilder = __webpack_require__(/*! ./playlistBuilder.jsx */ 210);
-	var Nav = __webpack_require__(/*! ./nav.jsx */ 215);
+	var Nav = __webpack_require__(/*! ./nav.jsx */ 214);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -25149,8 +25149,8 @@
 	
 	var React = __webpack_require__(/*! react */ 5);
 	var Search = __webpack_require__(/*! ./searchUI.jsx */ 211);
-	var SearchResult = __webpack_require__(/*! ./searchResult.jsx */ 213);
-	var Playlist = __webpack_require__(/*! ./playlist.jsx */ 214);
+	var SearchResult = __webpack_require__(/*! ./searchResult.jsx */ 212);
+	var Playlist = __webpack_require__(/*! ./playlist.jsx */ 213);
 	
 	var PlaylistBuilder = React.createClass({
 	  displayName: 'PlaylistBuilder',
@@ -25466,8 +25466,7 @@
 	module.exports = Search;
 
 /***/ },
-/* 212 */,
-/* 213 */
+/* 212 */
 /*!******************************!*\
   !*** ./src/searchResult.jsx ***!
   \******************************/
@@ -25558,7 +25557,7 @@
 	module.exports = SearchResult;
 
 /***/ },
-/* 214 */
+/* 213 */
 /*!**************************!*\
   !*** ./src/playlist.jsx ***!
   \**************************/
@@ -25644,7 +25643,7 @@
 	module.exports = Playlist;
 
 /***/ },
-/* 215 */
+/* 214 */
 /*!*********************!*\
   !*** ./src/nav.jsx ***!
   \*********************/

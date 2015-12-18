@@ -69,8 +69,14 @@ function exportPlaylist(user, tracksIds, title) {
     } else {
       newPlaylist.spotifyPlaylistId = body.id;
       newPlaylist.dateCreate = Date.now();
-      newPlaylist.name = "A NEW PLAYLIST ALL";
+      newPlaylist.name = title;
+      console.log(tracksIds[0].split(':')[2]);
+
       db.Playlist.create(newPlaylist, function(err, playlist) {
+        request.get("https://api.spotify.com/v1/tracks/" + tracksIds[0].split(':')[2], function(error, response, body) {
+          playlist.image = JSON.parse(body).album.images[0].url;
+          playlist.save();
+        });
         user.playlists.push(playlist);
         user.save();
         var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + playlist.spotifyPlaylistId + '/tracks?uris=' + tracksIds.join(','));
