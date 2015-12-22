@@ -8,7 +8,7 @@ var playlistSchema = mongoose.Schema({
     type: Date
   },
   pace: {
-    type: Number
+    type: String
   },
   playTime: {
     type: Number

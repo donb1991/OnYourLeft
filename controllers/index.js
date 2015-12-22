@@ -21,6 +21,7 @@ app.get('/api/search', function(req, res) {
           newSong.title = jsonSongs[i].title;
           newSong.artist = jsonSongs[i].artist_name;
           newSong.bpm = parseInt(jsonSongs[i].audio_summary.tempo);
+          newSong.runTime = jsonSongs[i].audio_summary.duration / 60;
           newSong.spotifyTrackId = jsonSongs[i].tracks[0].foreign_id;
           songs.push(newSong);
           db.Track.findOneAndUpdate({spotifyTrackId: newSong.spotifyTrackId}, newSong, {upsert: true}, function(err, data) {

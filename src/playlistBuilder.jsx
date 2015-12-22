@@ -15,10 +15,12 @@ var PlaylistBuilder = React.createClass({
     this.setState(newState);
   },
   addToPlaylist: function(track) {
-    var newState = this.state.playlist;
-    newState.push(track);
+    var newState = {};
+    newState.playlist = this.state.playlist;
+    newState.duration = this.state.duration + track.runTime;
+    newState.playlist.push(track);
     localStorage.setItem('playlist', JSON.stringify({playlist: newState}));
-    this.setState({playlist: newState});
+    this.setState(newState);
   },
 
   getInitialState: function() {
@@ -32,6 +34,7 @@ var PlaylistBuilder = React.createClass({
       bestBPM: 180,
       results: [],
       playlist: [],
+      duration: 0
     };
   },
 
@@ -49,6 +52,8 @@ var PlaylistBuilder = React.createClass({
     var sorted;
     if(pace[0] >= 12) {
       bpm = 130;
+    } else if(pace[0] <= 5) {
+      bpm = 200;
     } else {
       bpm = ((12 - pace[0]) * 10) + 130;
       if(pace[1] >= 30) {
@@ -95,6 +100,8 @@ var PlaylistBuilder = React.createClass({
   render: function() {
     return <div>
       <Search
+        bestBPM={this.state.bestBPM}
+        duration={this.state.duration}
         getTracks={this.getTracks}
         updateUserInputs={this.updateUserInputs}
         userInputs={this.state.userInputs}
