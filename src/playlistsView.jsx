@@ -1,15 +1,32 @@
 var React = require('react');
+import { Link } from 'react-router'
 
 var PlaylistsView = React.createClass({
-  componentDidMount: function() {
-    $.get("http://localhost:3000/api/playlists", (data) => {
-      this.setState({playlists: data});
+  componentWillMount: function() {
+    var url = "http://localhost:3000/api/playlists";
+    if(this.props.params.userId) {
+      url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+    }
+    $.get(url, (data) => {
+      this.setState({playlists: data, currectPage: window.location.hash.split('?')[0]});
     });
+  },
+  componentWillUpdate: function() {
+    if(this.state.currectPage !== window.location.hash.split('?')[0]) {
+      var url = "http://localhost:3000/api/playlists";
+      if(this.props.params.userId) {
+        url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+      }
+      $.get(url, (data) => {
+        this.setState({playlists: data, currectPage: window.location.hash.split('?')[0]});
+      });
+    }
   },
   getInitialState: function() {
     return {
       playlists: [],
-      sortByPace: 1
+      sortByPace: 1,
+      currectPage: window.location.hash.split('?')[0]
     }
   },
   sortByDate: function() {
@@ -37,15 +54,19 @@ var PlaylistsView = React.createClass({
   },
   render: function() {
     var playlistsElms = this.state.playlists.map((playlist, index) => {
-      return <div key={index}  className="column playlistIcon" style={{paddingTop: "8px", "backgroundColor": "#212121"}}>
-        <img src={playlist.image} />
-        <ul style={{listStyle: "none", paddingTop: "5px"}}>
-          <li>Title: {playlist.name} </li>
-          <li>Running Pace: {playlist.pace}</li>
-          <li>Duration: {parseInt(playlist.playTime)} Minutes</li>
-          <li>Created at: {moment(playlist.dateCreate).calendar()}</li>
-        </ul>
+      var playlistURL = '/playlists/' + playlist.spotifyPlaylistId;
+      return <div key={index} className="column playlistIcon" style={{paddingTop: "8px", "backgroundColor": "#212121"}}>
+        <Link to={playlistURL}>
+          <img style={{maxHeight: "260px"}} src={playlist.image} />
+          <ul style={{listStyle: "none", paddingTop: "5px"}}>
+            <li>Title: {playlist.name} </li>
+            <li>Running Pace: {playlist.pace}</li>
+            <li>Duration: {parseInt(playlist.playTime)} Minutes</li>
+            <li>Created at: {moment(playlist.dateCreate).calendar()}</li>
+          </ul>
+        </Link>
       </div>
+
     });
     return <div>
       <div className="row">

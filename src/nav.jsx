@@ -10,16 +10,17 @@ var Nav = React.createClass({
   render: function() {
     var menu;
     if(this.props.user){
+      var userURL = "users/" + this.props.user + "/playlists/";
       menu = <ul className="menu">
         <li><Link to='/'>Build a Playlist</Link></li>
-        <li><Link to='/playlists'>View all Playlist</Link></li>
-        <li><Link to='/playlists/1'>Your Playlist</Link></li>
+        <li><Link to='/playlists'>Browse</Link></li>
+        <li><Link to={userURL}>Your Playlist</Link></li>
         <li><a onClick={this.props.logout}>Logout</a></li>
       </ul>
     } else {
       menu = <ul className="menu">
         <li><Link to='/'>Build a Playlist</Link></li>
-        <li><Link to='/playlists'>View all Playlist</Link></li>
+        <li><Link to='/playlists'>Browse</Link></li>
         <li><a id='login' onClick={this.handleLogin}>Login</a></li>
       </ul>
     }
