@@ -17,7 +17,7 @@ var PlaylistBuilder = React.createClass({
   addToPlaylist: function(track) {
     var newState = {};
     newState.playlist = this.state.playlist;
-    newState.duration = this.state.duration + track.runTime;
+    newState.duration = this.state.duration + track.duration;
     newState.playlist.push(track);
     localStorage.setItem('playlist', JSON.stringify({playlist: newState}));
     this.setState(newState);

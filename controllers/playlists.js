@@ -18,7 +18,7 @@ app.post('/api/playlists', function(req, res) {
     tracksIds: [],
     title: req.body.title,
     pace: req.body.pace,
-    playTime: req.body.playTime
+    duration: req.body.duration
   }
   if(req.body.tracks === undefined) {
     res.send({error: "Playlist can't be empty"});
@@ -77,7 +77,7 @@ function exportPlaylist(user, playlistInfo) {
     newPlaylist.dateCreate = Date.now();
     newPlaylist.name = playlistInfo.title;
     newPlaylist.pace = playlistInfo.pace;
-    newPlaylist.playTime = playlistInfo.playTime;
+    newPlaylist.duration = playlistInfo.duration;
 
     db.Playlist.create(newPlaylist, function(err, playlist) {
       request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[0].split(':')[2], function(error, response, body) {
@@ -86,7 +86,7 @@ function exportPlaylist(user, playlistInfo) {
       });
       user.playlists.push(playlist);
       user.save();
-      var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + playlist.spotifyPlaylistId + '/tracks?uris=' + playlistInfo.tracksIds.join(','));
+      var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + newPlaylist.spotifyPlaylistId + '/tracks?uris=' + playlistInfo.tracksIds.join(','));
       options = {
         url: url,
         method: "POST",
@@ -96,12 +96,19 @@ function exportPlaylist(user, playlistInfo) {
         }
       };
       request.post(options, function(error, response, body) {});
-      for(var i = 0; i < playlistInfo.tracksIds.length; i++) {
+      var i = 0;
+      function addTrack() {
+        if(i === playlistInfo.tracksIds.length) {
+          playlist.save();
+          return;
+        }
         db.Track.findOne({spotifyTrackId: playlistInfo.tracksIds[i]}, function(error, track) {
           playlist.tracks.push(track);
-          playlist.save();
+          i++;
+          addTrack();
         });
       }
+      addTrack();
     });
   });
 }

@@ -17,7 +17,7 @@ var Search = React.createClass({
   export: function(event) {
     var title = '';
     if(!this.props.userInputs.title) {
-      title = this.props.userInputs.pace + "Minute Miles Playlist";
+      title = this.props.userInputs.pace + " Minute Miles Playlist";
     } else {
       title = this.props.userInputs.title;
     }

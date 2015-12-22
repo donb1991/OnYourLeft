@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var PlaylistBuilder = require('./playlistBuilder.jsx');
 var PlaylistsView = require('./playlistsView.jsx');
+var PlaylistView = require('./playlistView.jsx');
 var Nav = require('./nav.jsx');
 import { Router, Route, IndexRoute} from 'react-router'
 
@@ -91,7 +92,7 @@ ReactDOM.render((
     <Route path='/' component={App} >
       <IndexRoute component={PlaylistBuilder} />
       <Route path='/playlists' component={PlaylistsView}/>
-      <Route path='/playlists/:id' />
+      <Route path='/playlists/:id' component={PlaylistView}/>
       <Route path='/users/:userId/playlists/' component={PlaylistsView}/>
     </Route>
     <Route path='*' />

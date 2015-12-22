@@ -55,6 +55,7 @@
 	var ReactDOM = __webpack_require__(/*! react-dom */ 209);
 	var PlaylistBuilder = __webpack_require__(/*! ./playlistBuilder.jsx */ 210);
 	var PlaylistsView = __webpack_require__(/*! ./playlistsView.jsx */ 214);
+	var PlaylistView = __webpack_require__(/*! ./playlistView.jsx */ 216);
 	var Nav = __webpack_require__(/*! ./nav.jsx */ 215);
 	
 	var App = React.createClass({
@@ -153,7 +154,7 @@
 	    { path: '/', component: App },
 	    React.createElement(_reactRouter.IndexRoute, { component: PlaylistBuilder }),
 	    React.createElement(_reactRouter.Route, { path: '/playlists', component: PlaylistsView }),
-	    React.createElement(_reactRouter.Route, { path: '/playlists/:id' }),
+	    React.createElement(_reactRouter.Route, { path: '/playlists/:id', component: PlaylistView }),
 	    React.createElement(_reactRouter.Route, { path: '/users/:userId/playlists/', component: PlaylistsView })
 	  ),
 	  React.createElement(_reactRouter.Route, { path: '*' })
@@ -25169,7 +25170,7 @@
 	  addToPlaylist: function addToPlaylist(track) {
 	    var newState = {};
 	    newState.playlist = this.state.playlist;
-	    newState.duration = this.state.duration + track.runTime;
+	    newState.duration = this.state.duration + track.duration;
 	    newState.playlist.push(track);
 	    localStorage.setItem('playlist', JSON.stringify({ playlist: newState }));
 	    this.setState(newState);
@@ -25313,7 +25314,7 @@
 	  export: function _export(event) {
 	    var title = '';
 	    if (!this.props.userInputs.title) {
-	      title = this.props.userInputs.pace + "Minute Miles Playlist";
+	      title = this.props.userInputs.pace + " Minute Miles Playlist";
 	    } else {
 	      title = this.props.userInputs.title;
 	    }
@@ -25514,7 +25515,6 @@
 	    var _this = this;
 	
 	    var resultElms = this.props.results.map(function (result, index) {
-	      var src = "https://embed.spotify.com/?uri=" + result.spotifyTrackId;
 	      return React.createElement(
 	        "tr",
 	        { className: "track", key: index },
@@ -25947,6 +25947,133 @@
 	});
 	
 	module.exports = Nav;
+
+/***/ },
+/* 216 */
+/*!******************************!*\
+  !*** ./src/playlistView.jsx ***!
+  \******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(/*! react */ 5);
+	
+	var PlaylistView = React.createClass({
+	  displayName: 'PlaylistView',
+	
+	  componentWillMount: function componentWillMount() {
+	    var _this = this;
+	
+	    var url = "http://localhost:3000/api/playlists/" + this.props.params.id;
+	    $.get(url, function (data) {
+	      console.log(data);
+	      _this.setState({ playlist: data });
+	    });
+	  },
+	
+	  getInitialState: function getInitialState() {
+	    return {
+	      playlist: {
+	        name: '',
+	        pace: '',
+	        playTime: '',
+	        tracks: []
+	      }
+	    };
+	  },
+	
+	  render: function render() {
+	    var trackElms = this.state.playlist.tracks.map(function (track, index) {
+	      return React.createElement(
+	        'tr',
+	        { className: 'track', key: index },
+	        React.createElement(
+	          'td',
+	          null,
+	          track.title
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          track.artist
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          track.runTime
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          track.bpm
+	        )
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'h2',
+	          { className: 'columns large-9' },
+	          this.state.playlist.name
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'columns large-3' },
+	          React.createElement('input', { type: 'button', className: 'button', value: 'Edit', style: { transform: "translateY(20%)" } }),
+	          React.createElement('input', { type: 'button', className: 'button', value: 'Export to Spotify', style: { transform: "translateY(20%)" } })
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'table',
+	          { className: 'columns large-12' },
+	          React.createElement(
+	            'thead',
+	            null,
+	            React.createElement(
+	              'tr',
+	              null,
+	              React.createElement(
+	                'th',
+	                null,
+	                'Title'
+	              ),
+	              React.createElement(
+	                'th',
+	                null,
+	                'Artist'
+	              ),
+	              React.createElement(
+	                'th',
+	                null,
+	                'Duration'
+	              ),
+	              React.createElement(
+	                'th',
+	                null,
+	                'BPM'
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'tbody',
+	            null,
+	            trackElms
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PlaylistView;
 
 /***/ }
 /******/ ]);
