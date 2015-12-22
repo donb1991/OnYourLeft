@@ -15,12 +15,20 @@ var Search = React.createClass({
     }
   },
   export: function(event) {
+    var title = '';
+    if(!this.props.userInputs.title) {
+      title = this.props.userInputs.pace + "Minute Miles Playlist";
+    } else {
+      title = this.props.userInputs.title;
+    }
     $.ajax({
       method: "POST",
       url: "http://localhost:3000/api/playlists",
       data: {
-        title: this.props.userInputs.title,
-        tracks: this.props.playlist
+        title: title,
+        tracks: this.props.playlist,
+        pace: this.props.userInputs.pace,
+        playTime: this.props.duration
       }
     });
     localStorage.clear();
@@ -69,6 +77,9 @@ var Search = React.createClass({
         <div className="row">
           <div className="large-4 columns">
             <input className="step1" type="text" name="pace" placeholder="Minutes per Mile" value={this.props.userInputs.pace} onChange={this.handleChange}/>
+          </div>
+          <div className="large-6 columns" hidden={(this.props.userInputs.pace && !this.state.step3) ? false : true}>
+            <span>You should aim for songs with a {this.props.bestBPM} BPM</span>
           </div>
         </div>
 

@@ -3,7 +3,7 @@ var request = require('request');
 
 app.get('/api/playlists/', function(req, res) {
   db.Playlist.find({}, function(err, playlists) {
-    res.send(playlist);
+    res.send(playlists);
   })
 });
 
@@ -14,10 +14,18 @@ app.get('/api/playlists/:id', function(req, res) {
 });
 
 app.post('/api/playlists', function(req, res) {
-  var tracksIds = [];
-  var title = req.body.title;
+  var playlistInfo = {
+    tracksIds: [],
+    title: req.body.title,
+    pace: req.body.pace,
+    playTime: req.body.playTime
+  }
+  if(req.body.tracks === undefined) {
+    res.send({error: "Playlist can't be empty"});
+    return;
+  }
   req.body.tracks.forEach((track) => {
-    tracksIds.push(track.spotifyTrackId);
+    playlistInfo.tracksIds.push(track.spotifyTrackId);
   });
   db.User.findOne({spotifyUserId: req.session.id}, function(err, user) {
     if(Date.now() > user.token_created + (3555 * 1000)) {
@@ -36,18 +44,19 @@ app.post('/api/playlists', function(req, res) {
           user.refresh_token = body.refresh_token;
           user.token_created = Date.now();
           user.save();
-          exportPlaylist(user, tracksIds, title);
+          exportPlaylist(user, playlistInfo);
         }
       });
     } else {
-      exportPlaylist(user, tracksIds, title);
+      exportPlaylist(user, playlistInfo);
     }
   });
-  res.redirect('/');
+  res.send({status: 200});
 });
 
-function exportPlaylist(user, tracksIds, title) {
+function exportPlaylist(user, playlistInfo) {
   var newPlaylist = {};
+
   var options = {
     url: 'https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists',
     method: "POST",
@@ -57,47 +66,42 @@ function exportPlaylist(user, tracksIds, title) {
       "Accept": "application/json"
     },
     body: {
-      'name': title,
-      "public":false
+      'name': playlistInfo.title,
+      'public': false
     },
     json: true
   };
 
   request.post(options, function(error, response, body) {
-    if(error) {
-      console.log(error);
-    } else {
-      newPlaylist.spotifyPlaylistId = body.id;
-      newPlaylist.dateCreate = Date.now();
-      newPlaylist.name = title;
-      console.log(tracksIds[0].split(':')[2]);
+    newPlaylist.spotifyPlaylistId = body.id;
+    newPlaylist.dateCreate = Date.now();
+    newPlaylist.name = playlistInfo.title;
+    newPlaylist.pace = playlistInfo.pace;
+    newPlaylist.playTime = playlistInfo.playTime;
 
-      db.Playlist.create(newPlaylist, function(err, playlist) {
-        request.get("https://api.spotify.com/v1/tracks/" + tracksIds[0].split(':')[2], function(error, response, body) {
-          playlist.image = JSON.parse(body).album.images[0].url;
+    db.Playlist.create(newPlaylist, function(err, playlist) {
+      request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[0].split(':')[2], function(error, response, body) {
+        playlist.image = JSON.parse(body).album.images[0].url;
+        playlist.save();
+      });
+      user.playlists.push(playlist);
+      user.save();
+      var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + playlist.spotifyPlaylistId + '/tracks?uris=' + playlistInfo.tracksIds.join(','));
+      options = {
+        url: url,
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          'Authorization': 'Bearer ' + user.access_token
+        }
+      };
+      request.post(options, function(error, response, body) {});
+      for(var i = 0; i < playlistInfo.tracksIds.length; i++) {
+        db.Track.findOne({spotifyTrackId: playlistInfo.tracksIds[i]}, function(error, track) {
+          playlist.tracks.push(track);
           playlist.save();
         });
-        user.playlists.push(playlist);
-        user.save();
-        var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + playlist.spotifyPlaylistId + '/tracks?uris=' + tracksIds.join(','));
-        options = {
-          url: url,
-          method: "POST",
-          headers: {
-            "Accept": "application/json",
-            'Authorization': 'Bearer ' + user.access_token
-          }
-        };
-        request.post(options, function(error, response, body) {
-
-        });
-        for(var i = 0; i < tracksIds.length; i++) {
-          db.Track.findOne({spotifyTrackId: tracksIds[i]}, function(error, track) {
-            playlist.tracks.push(track);
-            playlist.save();
-          });
-        }
-      });
-    }
+      }
+    });
   });
 }

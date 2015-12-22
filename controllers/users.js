@@ -11,9 +11,7 @@ app.get('/logout', function(req, res) {
 });
 
 app.get('/api/users/:userId/playlists/', function(req,res) {
-  console.log(req.params.userId);
   db.User.findOne({spotifyUserId: req.params.userId}).populate('playlists').exec(function(err, user) {
-    console.log(user);
-    res.send(user);
+    res.send(user.playlists);
   });
 });

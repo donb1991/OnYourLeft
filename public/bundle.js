@@ -54,7 +54,8 @@
 	var React = __webpack_require__(/*! react */ 5);
 	var ReactDOM = __webpack_require__(/*! react-dom */ 209);
 	var PlaylistBuilder = __webpack_require__(/*! ./playlistBuilder.jsx */ 210);
-	var Nav = __webpack_require__(/*! ./nav.jsx */ 214);
+	var PlaylistsView = __webpack_require__(/*! ./playlistsView.jsx */ 214);
+	var Nav = __webpack_require__(/*! ./nav.jsx */ 215);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -151,9 +152,9 @@
 	    _reactRouter.Route,
 	    { path: '/', component: App },
 	    React.createElement(_reactRouter.IndexRoute, { component: PlaylistBuilder }),
-	    React.createElement(_reactRouter.Route, { path: '/playlists' }),
+	    React.createElement(_reactRouter.Route, { path: '/playlists', component: PlaylistsView }),
 	    React.createElement(_reactRouter.Route, { path: '/playlists/:id' }),
-	    React.createElement(_reactRouter.Route, { path: '/users/:userId/playlists/:id' })
+	    React.createElement(_reactRouter.Route, { path: '/users/:userId/playlists/', component: PlaylistsView })
 	  ),
 	  React.createElement(_reactRouter.Route, { path: '*' })
 	), document.getElementById('reactContainer'));
@@ -25166,10 +25167,12 @@
 	    this.setState(newState);
 	  },
 	  addToPlaylist: function addToPlaylist(track) {
-	    var newState = this.state.playlist;
-	    newState.push(track);
+	    var newState = {};
+	    newState.playlist = this.state.playlist;
+	    newState.duration = this.state.duration + track.runTime;
+	    newState.playlist.push(track);
 	    localStorage.setItem('playlist', JSON.stringify({ playlist: newState }));
-	    this.setState({ playlist: newState });
+	    this.setState(newState);
 	  },
 	
 	  getInitialState: function getInitialState() {
@@ -25182,7 +25185,8 @@
 	      },
 	      bestBPM: 180,
 	      results: [],
-	      playlist: []
+	      playlist: [],
+	      duration: 0
 	    };
 	  },
 	
@@ -25202,6 +25206,8 @@
 	    var sorted;
 	    if (pace[0] >= 12) {
 	      bpm = 130;
+	    } else if (pace[0] <= 5) {
+	      bpm = 200;
 	    } else {
 	      bpm = (12 - pace[0]) * 10 + 130;
 	      if (pace[1] >= 30) {
@@ -25250,6 +25256,8 @@
 	      'div',
 	      null,
 	      React.createElement(Search, {
+	        bestBPM: this.state.bestBPM,
+	        duration: this.state.duration,
 	        getTracks: this.getTracks,
 	        updateUserInputs: this.updateUserInputs,
 	        userInputs: this.state.userInputs,
@@ -25303,12 +25311,20 @@
 	    }
 	  },
 	  export: function _export(event) {
+	    var title = '';
+	    if (!this.props.userInputs.title) {
+	      title = this.props.userInputs.pace + "Minute Miles Playlist";
+	    } else {
+	      title = this.props.userInputs.title;
+	    }
 	    $.ajax({
 	      method: "POST",
 	      url: "http://localhost:3000/api/playlists",
 	      data: {
-	        title: this.props.userInputs.title,
-	        tracks: this.props.playlist
+	        title: title,
+	        tracks: this.props.playlist,
+	        pace: this.props.userInputs.pace,
+	        playTime: this.props.duration
 	      }
 	    });
 	    localStorage.clear();
@@ -25371,6 +25387,17 @@
 	            'div',
 	            { className: 'large-4 columns' },
 	            React.createElement('input', { className: 'step1', type: 'text', name: 'pace', placeholder: 'Minutes per Mile', value: this.props.userInputs.pace, onChange: this.handleChange })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'large-6 columns', hidden: this.props.userInputs.pace && !this.state.step3 ? false : true },
+	            React.createElement(
+	              'span',
+	              null,
+	              'You should aim for songs with a ',
+	              this.props.bestBPM,
+	              ' BPM'
+	            )
 	          )
 	        ),
 	        React.createElement(
@@ -25644,6 +25671,162 @@
 
 /***/ },
 /* 214 */
+/*!*******************************!*\
+  !*** ./src/playlistsView.jsx ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _reactRouter = __webpack_require__(/*! react-router */ 1);
+	
+	var React = __webpack_require__(/*! react */ 5);
+	
+	var PlaylistsView = React.createClass({
+	  displayName: 'PlaylistsView',
+	
+	  componentWillMount: function componentWillMount() {
+	    var _this = this;
+	
+	    var url = "http://localhost:3000/api/playlists";
+	    if (this.props.params.userId) {
+	      url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+	    }
+	    $.get(url, function (data) {
+	      _this.setState({ playlists: data, currectPage: window.location.hash.split('?')[0] });
+	    });
+	  },
+	  componentWillUpdate: function componentWillUpdate() {
+	    var _this2 = this;
+	
+	    if (this.state.currectPage !== window.location.hash.split('?')[0]) {
+	      var url = "http://localhost:3000/api/playlists";
+	      if (this.props.params.userId) {
+	        url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+	      }
+	      $.get(url, function (data) {
+	        _this2.setState({ playlists: data, currectPage: window.location.hash.split('?')[0] });
+	      });
+	    }
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      playlists: [],
+	      sortByPace: 1,
+	      currectPage: window.location.hash.split('?')[0]
+	    };
+	  },
+	  sortByDate: function sortByDate() {
+	    var sorted = this.state.playlists.sort(function (a, b) {
+	      return moment(a.dateCreate).isBefore(b.dateCreate) ? -1 : 1;
+	    });
+	    this.setState({ playlists: sorted });
+	  },
+	
+	  sortByPace: function sortByPace(sortBy) {
+	    var _this3 = this;
+	
+	    var sorted = this.state.playlists.sort(function (a, b) {
+	      if (Number(a.pace.split(':')[0]) == Number(b.pace.split(':')[0])) {
+	        if (Number(a.pace.split(':')[1]) >= Number(b.pace.split(':')[1])) {
+	          return -1 * _this3.state.sortByPace;
+	        } else {
+	          return 1 * _this3.state.sortByPace;
+	        }
+	      } else if (Number(a.pace.split(':')[0]) >= Number(b.pace.split(':')[0])) {
+	        return 1 * _this3.state.sortByPace;
+	      } else {
+	        return -1 * _this3.state.sortByPace;
+	      }
+	    });
+	    this.setState({ playlists: sorted, sortByPace: this.state.sortByPace * -1 });
+	  },
+	  render: function render() {
+	    var playlistsElms = this.state.playlists.map(function (playlist, index) {
+	      var playlistURL = '/playlists/' + playlist.spotifyPlaylistId;
+	      return React.createElement(
+	        'div',
+	        { key: index, className: 'column playlistIcon', style: { paddingTop: "8px", "backgroundColor": "#212121" } },
+	        React.createElement(
+	          _reactRouter.Link,
+	          { to: playlistURL },
+	          React.createElement('img', { style: { maxHeight: "260px" }, src: playlist.image }),
+	          React.createElement(
+	            'ul',
+	            { style: { listStyle: "none", paddingTop: "5px" } },
+	            React.createElement(
+	              'li',
+	              null,
+	              'Title: ',
+	              playlist.name,
+	              ' '
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              'Running Pace: ',
+	              playlist.pace
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              'Duration: ',
+	              parseInt(playlist.playTime),
+	              ' Minutes'
+	            ),
+	            React.createElement(
+	              'li',
+	              null,
+	              'Created at: ',
+	              moment(playlist.dateCreate).calendar()
+	            )
+	          )
+	        )
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'columns large-2' },
+	          React.createElement(
+	            'h2',
+	            null,
+	            'Playlists'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'columns large-4' },
+	          React.createElement(
+	            'div',
+	            { style: { position: "relative" } },
+	            React.createElement(
+	              'div',
+	              null,
+	              React.createElement('input', { style: { transform: "translateY(20%)" }, type: 'button', className: 'button', onClick: this.sortByPace, value: 'Pace' }),
+	              React.createElement('input', { style: { transform: "translateY(20%)" }, type: 'button', className: 'button', onClick: this.sortByDate, value: 'Date Created' })
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row large-up-4', style: { padding: "15px" } },
+	        playlistsElms
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PlaylistsView;
+
+/***/ },
+/* 215 */
 /*!*********************!*\
   !*** ./src/nav.jsx ***!
   \*********************/
@@ -25664,6 +25847,7 @@
 	  render: function render() {
 	    var menu;
 	    if (this.props.user) {
+	      var userURL = "users/" + this.props.user + "/playlists/";
 	      menu = React.createElement(
 	        'ul',
 	        { className: 'menu' },
@@ -25682,7 +25866,7 @@
 	          React.createElement(
 	            _reactRouter.Link,
 	            { to: '/playlists' },
-	            'View all Playlist'
+	            'Browse'
 	          )
 	        ),
 	        React.createElement(
@@ -25690,7 +25874,7 @@
 	          null,
 	          React.createElement(
 	            _reactRouter.Link,
-	            { to: '/playlists/1' },
+	            { to: userURL },
 	            'Your Playlist'
 	          )
 	        ),
@@ -25723,7 +25907,7 @@
 	          React.createElement(
 	            _reactRouter.Link,
 	            { to: '/playlists' },
-	            'View all Playlist'
+	            'Browse'
 	          )
 	        ),
 	        React.createElement(
