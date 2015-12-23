@@ -80,7 +80,9 @@ function exportPlaylist(user, playlistInfo) {
     newPlaylist.duration = playlistInfo.duration;
 
     db.Playlist.create(newPlaylist, function(err, playlist) {
-      request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[0].split(':')[2], function(error, response, body) {
+      var max = playlistInfo.tracksIds.length;
+      var randomIndex = Math.floor(Math.random() * (max - 0));
+      request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[randomIndex].split(':')[2], function(error, response, body) {
         playlist.image = JSON.parse(body).album.images[0].url;
         playlist.save();
       });
