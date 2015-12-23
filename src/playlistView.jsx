@@ -22,7 +22,8 @@ var PlaylistView = React.createClass({
         name: '',
         pace: '',
         duration: '',
-        tracks: []
+        tracks: [],
+        _id: ''
       }
     }
   },

@@ -29,7 +29,8 @@ var Search = React.createClass({
         title: title,
         tracks: this.props.playlist,
         pace: this.props.userInputs.pace,
-        duration: this.props.duration
+        duration: this.props.duration,
+        _id: false
       }
     });
     localStorage.clear();

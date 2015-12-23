@@ -18,7 +18,8 @@ app.post('/api/playlists', function(req, res) {
     tracksIds: [],
     title: req.body.title,
     pace: req.body.pace,
-    duration: req.body.duration
+    duration: req.body.duration,
+    id: req.body.id
   }
   if(req.body.tracks === undefined) {
     res.send({error: "Playlist can't be empty"});
@@ -79,7 +80,7 @@ function exportPlaylist(user, playlistInfo) {
     newPlaylist.pace = playlistInfo.pace;
     newPlaylist.duration = playlistInfo.duration;
 
-    db.Playlist.create(newPlaylist, function(err, playlist) {
+    db.Playlist.findOneAndUpdate({id: playlistInfo.id}, newPlaylist, {upsert: true}, function(err, playlist) {
       var max = playlistInfo.tracksIds.length;
       var randomIndex = Math.floor(Math.random() * (max - 0));
       request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[randomIndex].split(':')[2], function(error, response, body) {

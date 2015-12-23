@@ -31,7 +31,7 @@ var PlaylistsView = React.createClass({
   },
   sortByDate: function() {
     var sorted = this.state.playlists.sort((a,b) => {
-      return moment(a.dateCreate).isBefore(b.dateCreate) ? -1 : 1;
+      return moment(a.dateCreate).isBefore(b.dateCreate) ? 1 : -1;
     });
     this.setState({playlists: sorted});
   },

@@ -25341,7 +25341,8 @@
 	        title: title,
 	        tracks: this.props.playlist,
 	        pace: this.props.userInputs.pace,
-	        duration: this.props.duration
+	        duration: this.props.duration,
+	        _id: false
 	      }
 	    });
 	    localStorage.clear();
@@ -25734,7 +25735,7 @@
 	  },
 	  sortByDate: function sortByDate() {
 	    var sorted = this.state.playlists.sort(function (a, b) {
-	      return moment(a.dateCreate).isBefore(b.dateCreate) ? -1 : 1;
+	      return moment(a.dateCreate).isBefore(b.dateCreate) ? 1 : -1;
 	    });
 	    this.setState({ playlists: sorted });
 	  },
@@ -26001,7 +26002,8 @@
 	        name: '',
 	        pace: '',
 	        duration: '',
-	        tracks: []
+	        tracks: [],
+	        _id: ''
 	      }
 	    };
 	  },
