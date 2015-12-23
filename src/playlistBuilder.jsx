@@ -6,6 +6,11 @@ var Playlist = require('./playlist.jsx');
 var PlaylistBuilder = React.createClass({
   componentDidMount: function() {
     var newState = {};
+    if(localStorage.getItem('userInputs')) {
+      newState.userInputs = JSON.parse(localStorage.getItem('userInputs')).userInputs;
+      newState.userInputs.searchBy = 'artist';
+      newState.userInputs.searchValue = '';
+    }
     if(localStorage.getItem('results')) {
       newState.results = JSON.parse(localStorage.getItem('results')).results;
     }

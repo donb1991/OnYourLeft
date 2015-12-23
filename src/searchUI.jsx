@@ -14,6 +14,7 @@ var Search = React.createClass({
       }
     }
   },
+
   export: function(event) {
     var title = '';
     if(!this.props.userInputs.title) {
@@ -28,7 +29,7 @@ var Search = React.createClass({
         title: title,
         tracks: this.props.playlist,
         pace: this.props.userInputs.pace,
-        playTime: this.props.duration
+        duration: this.props.duration
       }
     });
     localStorage.clear();

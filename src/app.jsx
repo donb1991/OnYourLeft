@@ -14,7 +14,13 @@ var App = React.createClass({
   },
   getInitialState: function() {
     return {
-      user: null
+      user: null,
+      userInputs: {
+        searchValue: '',
+        pace: '',
+        searchBy: 'artist',
+        title: ''
+      }
     };
   },
 
@@ -72,7 +78,11 @@ var App = React.createClass({
   render: function() {
     var children;
     if(this.props.children) {
-      children = React.cloneElement(this.props.children, {logout: this.logout, login: this.login, user: this.state.user});
+      children = React.cloneElement(this.props.children, {
+        logout: this.logout,
+        login: this.login,
+        user: this.state.user
+      });
     } else {
       children = this.props.children;
     }

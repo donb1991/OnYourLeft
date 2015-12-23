@@ -70,7 +70,13 @@
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
-	      user: null
+	      user: null,
+	      userInputs: {
+	        searchValue: '',
+	        pace: '',
+	        searchBy: 'artist',
+	        title: ''
+	      }
 	    };
 	  },
 	
@@ -129,7 +135,11 @@
 	  render: function render() {
 	    var children;
 	    if (this.props.children) {
-	      children = React.cloneElement(this.props.children, { logout: this.logout, login: this.login, user: this.state.user });
+	      children = React.cloneElement(this.props.children, {
+	        logout: this.logout,
+	        login: this.login,
+	        user: this.state.user
+	      });
 	    } else {
 	      children = this.props.children;
 	    }
@@ -25159,6 +25169,11 @@
 	
 	  componentDidMount: function componentDidMount() {
 	    var newState = {};
+	    if (localStorage.getItem('userInputs')) {
+	      newState.userInputs = JSON.parse(localStorage.getItem('userInputs')).userInputs;
+	      newState.userInputs.searchBy = 'artist';
+	      newState.userInputs.searchValue = '';
+	    }
 	    if (localStorage.getItem('results')) {
 	      newState.results = JSON.parse(localStorage.getItem('results')).results;
 	    }
@@ -25311,6 +25326,7 @@
 	      };
 	    }
 	  },
+	
 	  export: function _export(event) {
 	    var title = '';
 	    if (!this.props.userInputs.title) {
@@ -25325,7 +25341,7 @@
 	        title: title,
 	        tracks: this.props.playlist,
 	        pace: this.props.userInputs.pace,
-	        playTime: this.props.duration
+	        duration: this.props.duration
 	      }
 	    });
 	    localStorage.clear();
@@ -25957,6 +25973,8 @@
 
 	'use strict';
 	
+	var _reactRouter = __webpack_require__(/*! react-router */ 1);
+	
 	var React = __webpack_require__(/*! react */ 5);
 	
 	var PlaylistView = React.createClass({
@@ -25967,20 +25985,51 @@
 	
 	    var url = "http://localhost:3000/api/playlists/" + this.props.params.id;
 	    $.get(url, function (data) {
-	      console.log(data);
 	      _this.setState({ playlist: data });
 	    });
 	  },
-	
+	  handleClick: function handleClick() {
+	    localStorage.setItem('playlist', JSON.stringify({ playlist: this.state.playlist.tracks }));
+	    localStorage.setItem('userInputs', JSON.stringify({ userInputs: {
+	        pace: this.state.playlist.pace,
+	        title: this.state.playlist.name
+	      } }));
+	  },
 	  getInitialState: function getInitialState() {
 	    return {
 	      playlist: {
 	        name: '',
 	        pace: '',
-	        playTime: '',
+	        duration: '',
 	        tracks: []
 	      }
 	    };
+	  },
+	
+	  handleExport: function handleExport(event) {
+	    var _this2 = this;
+	
+	    if (!this.props.user) {
+	      this.props.login().then(function () {
+	        _this2.export();
+	      });
+	    } else {
+	      this.export();
+	    }
+	  },
+	
+	  export: function _export(event) {
+	    $.ajax({
+	      method: "POST",
+	      url: "http://localhost:3000/api/playlists",
+	      data: {
+	        title: this.state.playlist.name,
+	        tracks: this.state.playlist.tracks,
+	        pace: this.state.playlist.pace,
+	        duration: this.state.duration
+	      }
+	    });
+	    localStorage.clear();
 	  },
 	
 	  render: function render() {
@@ -26024,8 +26073,12 @@
 	        React.createElement(
 	          'div',
 	          { className: 'columns large-3' },
-	          React.createElement('input', { type: 'button', className: 'button', value: 'Edit', style: { transform: "translateY(20%)" } }),
-	          React.createElement('input', { type: 'button', className: 'button', value: 'Export to Spotify', style: { transform: "translateY(20%)" } })
+	          React.createElement(
+	            _reactRouter.IndexLink,
+	            { to: '/', state: { playlist: this.state.playlist.tracks } },
+	            React.createElement('input', { type: 'button', className: 'button', value: 'Edit', onClick: this.handleClick, style: { transform: "translateY(20%)" } })
+	          ),
+	          React.createElement('input', { type: 'button', className: 'button', value: 'Export to Spotify', onClick: this.handleExport, style: { transform: "translateY(20%)" } })
 	        )
 	      ),
 	      React.createElement(
