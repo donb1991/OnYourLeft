@@ -80,7 +80,6 @@ function exportPlaylist(user, playlistInfo) {
     newPlaylist.pace = playlistInfo.pace;
     newPlaylist.duration = playlistInfo.duration;
     db.Playlist.findOneAndUpdate({spotifyPlaylistId: "6bQ8u5ZMxgx5UuF3n0"}, newPlaylist, {upsert: true, new: true}, function(err, playlist) {
-      console.log(err, playlist);
       var max = playlistInfo.tracksIds.length;
       var randomIndex = Math.floor(Math.random() * (max - 0));
       request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[randomIndex].split(':')[2], function(error, response, body) {

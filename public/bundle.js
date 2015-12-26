@@ -25788,7 +25788,7 @@
 	              'li',
 	              null,
 	              'Duration: ',
-	              parseInt(playlist.playTime),
+	              parseInt(playlist.duration / 60),
 	              ' Minutes'
 	            ),
 	            React.createElement(

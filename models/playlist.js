@@ -10,7 +10,7 @@ var playlistSchema = mongoose.Schema({
   pace: {
     type: String
   },
-  playTime: {
+  duration: {
     type: Number
   },
   shared: {
