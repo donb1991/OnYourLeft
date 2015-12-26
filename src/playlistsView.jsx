@@ -1,4 +1,5 @@
 var React = require('react');
+var moment = require('moment');
 import { Link } from 'react-router'
 
 var PlaylistsView = React.createClass({
