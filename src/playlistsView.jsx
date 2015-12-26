@@ -3,9 +3,9 @@ import { Link } from 'react-router'
 
 var PlaylistsView = React.createClass({
   componentWillMount: function() {
-    var url = "http://localhost:3000/api/playlists";
+    var url = "https://onyourleft.herokuapp.com/api/playlists";
     if(this.props.params.userId) {
-      url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+      url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
     }
     $.get(url, (data) => {
       this.setState({playlists: data, currectPage: window.location.hash.split('?')[0]});
@@ -13,9 +13,9 @@ var PlaylistsView = React.createClass({
   },
   componentWillUpdate: function() {
     if(this.state.currectPage !== window.location.hash.split('?')[0]) {
-      var url = "http://localhost:3000/api/playlists";
+      var url = "https://onyourleft.herokuapp.com/api/playlists";
       if(this.props.params.userId) {
-        url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+        url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
       }
       $.get(url, (data) => {
         this.setState({playlists: data, currectPage: window.location.hash.split('?')[0]});

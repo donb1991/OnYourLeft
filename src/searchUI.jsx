@@ -24,7 +24,7 @@ var Search = React.createClass({
     }
     $.ajax({
       method: "POST",
-      url: "http://localhost:3000/api/playlists",
+      url: "https://onyourleft.herokuapp.com/api/playlists",
       data: {
         title: title,
         tracks: this.props.playlist,
