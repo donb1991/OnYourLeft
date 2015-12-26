@@ -7,10 +7,13 @@ var trackSchema = mongoose.Schema({
   albumArt: {
     type: Number
   },
+  artist: {
+    type: String
+  },
   bpm: {
     type: Number
   },
-  runTime: {
+  duration: {
     type: Number
   },
   spotifyTrackId: {

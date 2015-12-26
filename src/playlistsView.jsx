@@ -31,7 +31,7 @@ var PlaylistsView = React.createClass({
   },
   sortByDate: function() {
     var sorted = this.state.playlists.sort((a,b) => {
-      return moment(a.dateCreate).isBefore(b.dateCreate) ? -1 : 1;
+      return moment(a.dateCreate).isBefore(b.dateCreate) ? 1 : -1;
     });
     this.setState({playlists: sorted});
   },
@@ -61,7 +61,7 @@ var PlaylistsView = React.createClass({
           <ul style={{listStyle: "none", paddingTop: "5px"}}>
             <li>Title: {playlist.name} </li>
             <li>Running Pace: {playlist.pace}</li>
-            <li>Duration: {parseInt(playlist.playTime)} Minutes</li>
+            <li>Duration: {parseInt(playlist.duration / 60)} Minutes</li>
             <li>Created at: {moment(playlist.dateCreate).calendar()}</li>
           </ul>
         </Link>

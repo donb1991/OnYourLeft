@@ -18,7 +18,8 @@ app.post('/api/playlists', function(req, res) {
     tracksIds: [],
     title: req.body.title,
     pace: req.body.pace,
-    playTime: req.body.playTime
+    duration: req.body.duration,
+    id: -1
   }
   if(req.body.tracks === undefined) {
     res.send({error: "Playlist can't be empty"});
@@ -77,16 +78,17 @@ function exportPlaylist(user, playlistInfo) {
     newPlaylist.dateCreate = Date.now();
     newPlaylist.name = playlistInfo.title;
     newPlaylist.pace = playlistInfo.pace;
-    newPlaylist.playTime = playlistInfo.playTime;
-
-    db.Playlist.create(newPlaylist, function(err, playlist) {
-      request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[0].split(':')[2], function(error, response, body) {
+    newPlaylist.duration = playlistInfo.duration;
+    db.Playlist.findOneAndUpdate({spotifyPlaylistId: "6bQ8u5ZMxgx5UuF3n0"}, newPlaylist, {upsert: true, new: true}, function(err, playlist) {
+      var max = playlistInfo.tracksIds.length;
+      var randomIndex = Math.floor(Math.random() * (max - 0));
+      request.get("https://api.spotify.com/v1/tracks/" + playlistInfo.tracksIds[randomIndex].split(':')[2], function(error, response, body) {
         playlist.image = JSON.parse(body).album.images[0].url;
         playlist.save();
       });
       user.playlists.push(playlist);
       user.save();
-      var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + playlist.spotifyPlaylistId + '/tracks?uris=' + playlistInfo.tracksIds.join(','));
+      var url = encodeURI('https://api.spotify.com/v1/users/' + user.spotifyUserId + '/playlists/' + newPlaylist.spotifyPlaylistId + '/tracks?uris=' + playlistInfo.tracksIds.join(','));
       options = {
         url: url,
         method: "POST",
@@ -96,12 +98,19 @@ function exportPlaylist(user, playlistInfo) {
         }
       };
       request.post(options, function(error, response, body) {});
-      for(var i = 0; i < playlistInfo.tracksIds.length; i++) {
+      var i = 0;
+      function addTrack() {
+        if(i === playlistInfo.tracksIds.length) {
+          playlist.save();
+          return;
+        }
         db.Track.findOne({spotifyTrackId: playlistInfo.tracksIds[i]}, function(error, track) {
           playlist.tracks.push(track);
-          playlist.save();
+          i++;
+          addTrack();
         });
       }
+      addTrack();
     });
   });
 }

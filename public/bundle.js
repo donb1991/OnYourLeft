@@ -55,6 +55,7 @@
 	var ReactDOM = __webpack_require__(/*! react-dom */ 209);
 	var PlaylistBuilder = __webpack_require__(/*! ./playlistBuilder.jsx */ 210);
 	var PlaylistsView = __webpack_require__(/*! ./playlistsView.jsx */ 214);
+	var PlaylistView = __webpack_require__(/*! ./playlistView.jsx */ 216);
 	var Nav = __webpack_require__(/*! ./nav.jsx */ 215);
 	
 	var App = React.createClass({
@@ -69,7 +70,13 @@
 	  },
 	  getInitialState: function getInitialState() {
 	    return {
-	      user: null
+	      user: null,
+	      userInputs: {
+	        searchValue: '',
+	        pace: '',
+	        searchBy: 'artist',
+	        title: ''
+	      }
 	    };
 	  },
 	
@@ -128,7 +135,11 @@
 	  render: function render() {
 	    var children;
 	    if (this.props.children) {
-	      children = React.cloneElement(this.props.children, { logout: this.logout, login: this.login, user: this.state.user });
+	      children = React.cloneElement(this.props.children, {
+	        logout: this.logout,
+	        login: this.login,
+	        user: this.state.user
+	      });
 	    } else {
 	      children = this.props.children;
 	    }
@@ -153,7 +164,7 @@
 	    { path: '/', component: App },
 	    React.createElement(_reactRouter.IndexRoute, { component: PlaylistBuilder }),
 	    React.createElement(_reactRouter.Route, { path: '/playlists', component: PlaylistsView }),
-	    React.createElement(_reactRouter.Route, { path: '/playlists/:id' }),
+	    React.createElement(_reactRouter.Route, { path: '/playlists/:id', component: PlaylistView }),
 	    React.createElement(_reactRouter.Route, { path: '/users/:userId/playlists/', component: PlaylistsView })
 	  ),
 	  React.createElement(_reactRouter.Route, { path: '*' })
@@ -25158,6 +25169,11 @@
 	
 	  componentDidMount: function componentDidMount() {
 	    var newState = {};
+	    if (localStorage.getItem('userInputs')) {
+	      newState.userInputs = JSON.parse(localStorage.getItem('userInputs')).userInputs;
+	      newState.userInputs.searchBy = 'artist';
+	      newState.userInputs.searchValue = '';
+	    }
 	    if (localStorage.getItem('results')) {
 	      newState.results = JSON.parse(localStorage.getItem('results')).results;
 	    }
@@ -25169,7 +25185,7 @@
 	  addToPlaylist: function addToPlaylist(track) {
 	    var newState = {};
 	    newState.playlist = this.state.playlist;
-	    newState.duration = this.state.duration + track.runTime;
+	    newState.duration = this.state.duration + track.duration;
 	    newState.playlist.push(track);
 	    localStorage.setItem('playlist', JSON.stringify({ playlist: newState }));
 	    this.setState(newState);
@@ -25310,10 +25326,11 @@
 	      };
 	    }
 	  },
+	
 	  export: function _export(event) {
 	    var title = '';
 	    if (!this.props.userInputs.title) {
-	      title = this.props.userInputs.pace + "Minute Miles Playlist";
+	      title = this.props.userInputs.pace + " Minute Miles Playlist";
 	    } else {
 	      title = this.props.userInputs.title;
 	    }
@@ -25324,7 +25341,8 @@
 	        title: title,
 	        tracks: this.props.playlist,
 	        pace: this.props.userInputs.pace,
-	        playTime: this.props.duration
+	        duration: this.props.duration,
+	        _id: false
 	      }
 	    });
 	    localStorage.clear();
@@ -25514,7 +25532,6 @@
 	    var _this = this;
 	
 	    var resultElms = this.props.results.map(function (result, index) {
-	      var src = "https://embed.spotify.com/?uri=" + result.spotifyTrackId;
 	      return React.createElement(
 	        "tr",
 	        { className: "track", key: index },
@@ -25718,7 +25735,7 @@
 	  },
 	  sortByDate: function sortByDate() {
 	    var sorted = this.state.playlists.sort(function (a, b) {
-	      return moment(a.dateCreate).isBefore(b.dateCreate) ? -1 : 1;
+	      return moment(a.dateCreate).isBefore(b.dateCreate) ? 1 : -1;
 	    });
 	    this.setState({ playlists: sorted });
 	  },
@@ -25771,7 +25788,7 @@
 	              'li',
 	              null,
 	              'Duration: ',
-	              parseInt(playlist.playTime),
+	              parseInt(playlist.duration / 60),
 	              ' Minutes'
 	            ),
 	            React.createElement(
@@ -25947,6 +25964,171 @@
 	});
 	
 	module.exports = Nav;
+
+/***/ },
+/* 216 */
+/*!******************************!*\
+  !*** ./src/playlistView.jsx ***!
+  \******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _reactRouter = __webpack_require__(/*! react-router */ 1);
+	
+	var React = __webpack_require__(/*! react */ 5);
+	
+	var PlaylistView = React.createClass({
+	  displayName: 'PlaylistView',
+	
+	  componentWillMount: function componentWillMount() {
+	    var _this = this;
+	
+	    var url = "http://localhost:3000/api/playlists/" + this.props.params.id;
+	    $.get(url, function (data) {
+	      _this.setState({ playlist: data });
+	    });
+	  },
+	  handleClick: function handleClick() {
+	    localStorage.setItem('playlist', JSON.stringify({ playlist: this.state.playlist.tracks }));
+	    localStorage.setItem('userInputs', JSON.stringify({ userInputs: {
+	        pace: this.state.playlist.pace,
+	        title: this.state.playlist.name
+	      } }));
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      playlist: {
+	        name: '',
+	        pace: '',
+	        duration: '',
+	        tracks: [],
+	        _id: ''
+	      }
+	    };
+	  },
+	
+	  handleExport: function handleExport(event) {
+	    var _this2 = this;
+	
+	    if (!this.props.user) {
+	      this.props.login().then(function () {
+	        _this2.export();
+	      });
+	    } else {
+	      this.export();
+	    }
+	  },
+	
+	  export: function _export(event) {
+	    $.ajax({
+	      method: "POST",
+	      url: "http://localhost:3000/api/playlists",
+	      data: {
+	        title: this.state.playlist.name,
+	        tracks: this.state.playlist.tracks,
+	        pace: this.state.playlist.pace,
+	        duration: this.state.duration
+	      }
+	    });
+	    localStorage.clear();
+	  },
+	
+	  render: function render() {
+	    var trackElms = this.state.playlist.tracks.map(function (track, index) {
+	      return React.createElement(
+	        'tr',
+	        { className: 'track', key: index },
+	        React.createElement(
+	          'td',
+	          null,
+	          track.title
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          track.artist
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          track.runTime
+	        ),
+	        React.createElement(
+	          'td',
+	          null,
+	          track.bpm
+	        )
+	      );
+	    });
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'h2',
+	          { className: 'columns large-9' },
+	          this.state.playlist.name
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'columns large-3' },
+	          React.createElement(
+	            _reactRouter.IndexLink,
+	            { to: '/', state: { playlist: this.state.playlist.tracks } },
+	            React.createElement('input', { type: 'button', className: 'button', value: 'Edit', onClick: this.handleClick, style: { transform: "translateY(20%)" } })
+	          ),
+	          React.createElement('input', { type: 'button', className: 'button', value: 'Export to Spotify', onClick: this.handleExport, style: { transform: "translateY(20%)" } })
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'table',
+	          { className: 'columns large-12' },
+	          React.createElement(
+	            'thead',
+	            null,
+	            React.createElement(
+	              'tr',
+	              null,
+	              React.createElement(
+	                'th',
+	                null,
+	                'Title'
+	              ),
+	              React.createElement(
+	                'th',
+	                null,
+	                'Artist'
+	              ),
+	              React.createElement(
+	                'th',
+	                null,
+	                'Duration'
+	              ),
+	              React.createElement(
+	                'th',
+	                null,
+	                'BPM'
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'tbody',
+	            null,
+	            trackElms
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = PlaylistView;
 
 /***/ }
 /******/ ]);

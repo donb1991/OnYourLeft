@@ -6,6 +6,11 @@ var Playlist = require('./playlist.jsx');
 var PlaylistBuilder = React.createClass({
   componentDidMount: function() {
     var newState = {};
+    if(localStorage.getItem('userInputs')) {
+      newState.userInputs = JSON.parse(localStorage.getItem('userInputs')).userInputs;
+      newState.userInputs.searchBy = 'artist';
+      newState.userInputs.searchValue = '';
+    }
     if(localStorage.getItem('results')) {
       newState.results = JSON.parse(localStorage.getItem('results')).results;
     }
@@ -17,7 +22,7 @@ var PlaylistBuilder = React.createClass({
   addToPlaylist: function(track) {
     var newState = {};
     newState.playlist = this.state.playlist;
-    newState.duration = this.state.duration + track.runTime;
+    newState.duration = this.state.duration + track.duration;
     newState.playlist.push(track);
     localStorage.setItem('playlist', JSON.stringify({playlist: newState}));
     this.setState(newState);
