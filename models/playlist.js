@@ -8,15 +8,18 @@ var playlistSchema = mongoose.Schema({
     type: Date
   },
   pace: {
-    type: Number
+    type: String
   },
-  playTime: {
+  duration: {
     type: Number
   },
   shared: {
     type: Number
   },
   spotifyPlaylistId: {
+    type: String
+  },
+  image: {
     type: String
   },
   stars: {

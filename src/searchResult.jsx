@@ -1,11 +1,13 @@
-window.SearchResult = React.createClass({
+var React = require('react');
+
+var SearchResult = React.createClass({
   handleClick: function(event) {
     this.props.addToPlaylist(this.props.results[event.currentTarget.value]);
   },
+
   render: function() {
     var resultElms = this.props.results.map((result, index) => {
-      var src = `https://embed.spotify.com/?uri=${result.spotifyTrackId}`
-      return <tr key={index}>
+      return <tr className="track" key={index}>
         <td><button value={index} onClick={this.handleClick}><i className="fi-plus"/></button></td>
         <td>{result.title}</td>
         <td>{result.artist}</td>
@@ -13,7 +15,7 @@ window.SearchResult = React.createClass({
       </tr>
     });
 
-    return <table className="large-6 columns">
+    return <table className="large-7 columns results">
       <thead>
         <tr>
           <th />
@@ -34,3 +36,5 @@ window.SearchResult = React.createClass({
     </table>
   }
 });
+
+module.exports = SearchResult;
