@@ -64,7 +64,7 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    $.get("http://localhost:3000/api/users").then(function (data) {
+	    $.get("https://onyourleft.herokuapp.com/api/users").then(function (data) {
 	      _this.setState(data);
 	    });
 	  },
@@ -91,7 +91,7 @@
 	        response_type: 'code',
 	        client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
 	        scope: scope,
-	        redirect_uri: "http://localhost:3000/callback",
+	        redirect_uri: "https://onyourleft.herokuapp.com/callback",
 	        show_dialog: true
 	      };
 	      var query = [];
@@ -111,7 +111,7 @@
 	        if (loginWindow !== null) {
 	          if (loginWindow.login) {
 	            clearInterval(loginWindowClosed);
-	            $.get("http://localhost:3000/api/users").then(function (data) {
+	            $.get("https://onyourleft.herokuapp.com/api/users").then(function (data) {
 	              _this2.setState(data);
 	            });
 	            resolve(true);
@@ -127,7 +127,7 @@
 	  logout: function logout() {
 	    var _this3 = this;
 	
-	    $.get("http://localhost:3000/logout").done(function () {
+	    $.get("https://onyourleft.herokuapp.com/logout").done(function () {
 	      _this3.setState({ user: null });
 	    });
 	  },
@@ -25209,7 +25209,7 @@
 	  getTracks: function getTracks() {
 	    var _this = this;
 	
-	    $.get("http://localhost:3000/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
+	    $.get("https://onyourleft.herokuapp.com/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
 	      var newPlaylist = _this.sortTracks(data, _this.state.bestBPM);
 	      localStorage.setItem('results', JSON.stringify({ results: newPlaylist }));
 	      _this.updateResults(newPlaylist);
@@ -25336,7 +25336,7 @@
 	    }
 	    $.ajax({
 	      method: "POST",
-	      url: "http://localhost:3000/api/playlists",
+	      url: "https://onyourleft.herokuapp.com/api/playlists",
 	      data: {
 	        title: title,
 	        tracks: this.props.playlist,
@@ -25705,9 +25705,9 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    var url = "http://localhost:3000/api/playlists";
+	    var url = "https://onyourleft.herokuapp.com/api/playlists";
 	    if (this.props.params.userId) {
-	      url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+	      url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
 	    }
 	    $.get(url, function (data) {
 	      _this.setState({ playlists: data, currectPage: window.location.hash.split('?')[0] });
@@ -25717,9 +25717,9 @@
 	    var _this2 = this;
 	
 	    if (this.state.currectPage !== window.location.hash.split('?')[0]) {
-	      var url = "http://localhost:3000/api/playlists";
+	      var url = "https://onyourleft.herokuapp.com/api/playlists";
 	      if (this.props.params.userId) {
-	        url = "http://localhost:3000/api/users/" + this.props.params.userId + "/playlists/";
+	        url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
 	      }
 	      $.get(url, function (data) {
 	        _this2.setState({ playlists: data, currectPage: window.location.hash.split('?')[0] });
@@ -25984,7 +25984,7 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    var url = "http://localhost:3000/api/playlists/" + this.props.params.id;
+	    var url = "https://onyourleft.herokuapp.com/api/playlists/" + this.props.params.id;
 	    $.get(url, function (data) {
 	      _this.setState({ playlist: data });
 	    });
@@ -26023,7 +26023,7 @@
 	  export: function _export(event) {
 	    $.ajax({
 	      method: "POST",
-	      url: "http://localhost:3000/api/playlists",
+	      url: "https://onyourleft.herokuapp.com/api/playlists",
 	      data: {
 	        title: this.state.playlist.name,
 	        tracks: this.state.playlist.tracks,

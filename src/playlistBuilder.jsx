@@ -44,7 +44,7 @@ var PlaylistBuilder = React.createClass({
   },
 
   getTracks: function() {
-    $.get("http://localhost:3000/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
+    $.get("https://onyourleft.herokuapp.com/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
       this.updateResults(newPlaylist);
