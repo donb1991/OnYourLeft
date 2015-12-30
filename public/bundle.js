@@ -25204,16 +25204,19 @@
 	      bestBPM: 180,
 	      results: [],
 	      playlist: [],
-	      duration: 0
+	      duration: 0,
+	      isLoading: false
 	    };
 	  },
 	
 	  getTracks: function getTracks() {
 	    var _this = this;
 	
+	    this.setState({ isLoading: true });
 	    $.get(URL + "/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
 	      var newPlaylist = _this.sortTracks(data, _this.state.bestBPM);
 	      localStorage.setItem('results', JSON.stringify({ results: newPlaylist }));
+	      _this.setState({ isLoading: false });
 	      _this.updateResults(newPlaylist);
 	    });
 	  },
@@ -25285,7 +25288,24 @@
 	      }),
 	      React.createElement(
 	        'div',
-	        { className: 'row' },
+	        { className: 'row', hidden: !this.state.isLoading },
+	        React.createElement(
+	          'div',
+	          { className: 'loading' },
+	          React.createElement(
+	            'div',
+	            { className: 'spinner' },
+	            React.createElement(
+	              'div',
+	              { className: 'mask' },
+	              React.createElement('div', { className: 'maskedCircle' })
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row', hidden: this.state.results.length === 0 && this.state.playlist.length === 0 },
 	        React.createElement(SearchResult, {
 	          addToPlaylist: this.addToPlaylist,
 	          results: this.state.results

@@ -40,15 +40,19 @@ var PlaylistBuilder = React.createClass({
       bestBPM: 180,
       results: [],
       playlist: [],
-      duration: 0
+      duration: 0,
+      isLoading: false
     };
   },
 
   getTracks: function() {
+    this.setState({isLoading: true});
     $.get(URL + "/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
+      this.setState({isLoading: false});
       this.updateResults(newPlaylist);
+
     });
   },
 
@@ -115,7 +119,16 @@ var PlaylistBuilder = React.createClass({
         login={this.props.login}
         playlist={this.state.playlist}
       />
-      <div className="row">
+      <div className="row" hidden={!this.state.isLoading}>
+        <div className="loading">
+          <div className="spinner">
+            <div className="mask">
+              <div className="maskedCircle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row" hidden={this.state.results.length === 0 && this.state.playlist.length === 0}>
         <SearchResult
           addToPlaylist={this.addToPlaylist}
           results={this.state.results}
