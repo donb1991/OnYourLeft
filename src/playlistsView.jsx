@@ -58,7 +58,7 @@ var PlaylistsView = React.createClass({
       var playlistURL = '/playlists/' + playlist.spotifyPlaylistId;
       return <div key={index} className="column playlistIcon" style={{paddingTop: "8px", "backgroundColor": "#212121"}}>
         <Link to={playlistURL}>
-          <img style={{maxHeight: "260px"}} src={playlist.image} />
+          <img className="playlistImg" style={{maxHeight: "260px"}} src={playlist.image} />
           <ul style={{listStyle: "none", paddingTop: "5px"}}>
             <li>Title: {playlist.name} </li>
             <li>Running Pace: {playlist.pace}</li>
