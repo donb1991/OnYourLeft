@@ -2,6 +2,7 @@ var React = require('react');
 var Search = require('./searchUI.jsx');
 var SearchResult = require('./searchResult.jsx');
 var Playlist = require('./playlist.jsx');
+var URL = require('./url.js');
 
 var PlaylistBuilder = React.createClass({
   componentDidMount: function() {
@@ -44,7 +45,7 @@ var PlaylistBuilder = React.createClass({
   },
 
   getTracks: function() {
-    $.get("https://onyourleft.herokuapp.com/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
+    $.get(URL + "/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
       localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
       this.updateResults(newPlaylist);

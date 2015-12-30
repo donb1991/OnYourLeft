@@ -57,6 +57,7 @@
 	var PlaylistsView = __webpack_require__(/*! ./playlistsView.jsx */ 214);
 	var PlaylistView = __webpack_require__(/*! ./playlistView.jsx */ 303);
 	var Nav = __webpack_require__(/*! ./nav.jsx */ 304);
+	var URL = __webpack_require__(/*! ./url.js */ 305);
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -64,7 +65,7 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    $.get("https://onyourleft.herokuapp.com/api/users").then(function (data) {
+	    $.get(URL + "/api/users").then(function (data) {
 	      _this.setState(data);
 	    });
 	  },
@@ -91,7 +92,7 @@
 	        response_type: 'code',
 	        client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
 	        scope: scope,
-	        redirect_uri: "https://onyourleft.herokuapp.com/callback",
+	        redirect_uri: URL + "/callback",
 	        show_dialog: true
 	      };
 	      var query = [];
@@ -111,7 +112,7 @@
 	        if (loginWindow !== null) {
 	          if (loginWindow.login) {
 	            clearInterval(loginWindowClosed);
-	            $.get("https://onyourleft.herokuapp.com/api/users").then(function (data) {
+	            $.get(URL + "/api/users").then(function (data) {
 	              _this2.setState(data);
 	            });
 	            resolve(true);
@@ -127,7 +128,7 @@
 	  logout: function logout() {
 	    var _this3 = this;
 	
-	    $.get("https://onyourleft.herokuapp.com/logout").done(function () {
+	    $.get(URL + "/logout").done(function () {
 	      _this3.setState({ user: null });
 	    });
 	  },
@@ -25163,6 +25164,7 @@
 	var Search = __webpack_require__(/*! ./searchUI.jsx */ 211);
 	var SearchResult = __webpack_require__(/*! ./searchResult.jsx */ 212);
 	var Playlist = __webpack_require__(/*! ./playlist.jsx */ 213);
+	var URL = __webpack_require__(/*! ./url.js */ 305);
 	
 	var PlaylistBuilder = React.createClass({
 	  displayName: 'PlaylistBuilder',
@@ -25209,7 +25211,7 @@
 	  getTracks: function getTracks() {
 	    var _this = this;
 	
-	    $.get("https://onyourleft.herokuapp.com/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
+	    $.get(URL + "/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done(function (data) {
 	      var newPlaylist = _this.sortTracks(data, _this.state.bestBPM);
 	      localStorage.setItem('results', JSON.stringify({ results: newPlaylist }));
 	      _this.updateResults(newPlaylist);
@@ -25309,6 +25311,7 @@
 	'use strict';
 	
 	var React = __webpack_require__(/*! react */ 5);
+	var URL = __webpack_require__(/*! ./url.js */ 305);
 	
 	var Search = React.createClass({
 	  displayName: 'Search',
@@ -25336,7 +25339,7 @@
 	    }
 	    $.ajax({
 	      method: "POST",
-	      url: "https://onyourleft.herokuapp.com/api/playlists",
+	      url: URL + "/api/playlists",
 	      data: {
 	        title: title,
 	        tracks: this.props.playlist,
@@ -25699,6 +25702,7 @@
 	
 	var React = __webpack_require__(/*! react */ 5);
 	var moment = __webpack_require__(/*! moment */ 215);
+	var URL = __webpack_require__(/*! ./url.js */ 305);
 	
 	var PlaylistsView = React.createClass({
 	  displayName: 'PlaylistsView',
@@ -25706,9 +25710,9 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    var url = "https://onyourleft.herokuapp.com/api/playlists";
+	    var url = URL + "/api/playlists";
 	    if (this.props.params.userId) {
-	      url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
+	      url = URL + "/api/users/" + this.props.params.userId + "/playlists/";
 	    }
 	    $.get(url, function (data) {
 	      _this.setState({ playlists: data, currectPage: window.location.hash.split('?')[0] });
@@ -25718,9 +25722,9 @@
 	    var _this2 = this;
 	
 	    if (this.state.currectPage !== window.location.hash.split('?')[0]) {
-	      var url = "https://onyourleft.herokuapp.com/api/playlists";
+	      var url = URL + "/api/playlists";
 	      if (this.props.params.userId) {
-	        url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
+	        url = URL + "/api/users/" + this.props.params.userId + "/playlists/";
 	      }
 	      $.get(url, function (data) {
 	        _this2.setState({ playlists: data, currectPage: window.location.hash.split('?')[0] });
@@ -37579,6 +37583,7 @@
 	var _reactRouter = __webpack_require__(/*! react-router */ 1);
 	
 	var React = __webpack_require__(/*! react */ 5);
+	var URL = __webpack_require__(/*! ./url.js */ 305);
 	
 	var PlaylistView = React.createClass({
 	  displayName: 'PlaylistView',
@@ -37586,7 +37591,7 @@
 	  componentWillMount: function componentWillMount() {
 	    var _this = this;
 	
-	    var url = "https://onyourleft.herokuapp.com/api/playlists/" + this.props.params.id;
+	    var url = URL + "/api/playlists/" + this.props.params.id;
 	    $.get(url, function (data) {
 	      _this.setState({ playlist: data });
 	    });
@@ -37625,7 +37630,7 @@
 	  export: function _export(event) {
 	    $.ajax({
 	      method: "POST",
-	      url: "https://onyourleft.herokuapp.com/api/playlists",
+	      url: URL + "/api/playlists",
 	      data: {
 	        title: this.state.playlist.name,
 	        tracks: this.state.playlist.tracks,
@@ -37854,6 +37859,16 @@
 	});
 	
 	module.exports = Nav;
+
+/***/ },
+/* 305 */
+/*!********************!*\
+  !*** ./src/url.js ***!
+  \********************/
+/***/ function(module, exports) {
+
+	module.exports = "http://localhost:3000";
+
 
 /***/ }
 /******/ ]);

@@ -1,12 +1,13 @@
 var React = require('react');
 var moment = require('moment');
+var URL = require('./url.js');
 import { Link } from 'react-router'
 
 var PlaylistsView = React.createClass({
   componentWillMount: function() {
-    var url = "https://onyourleft.herokuapp.com/api/playlists";
+    var url = URL + "/api/playlists";
     if(this.props.params.userId) {
-      url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
+      url = URL + "/api/users/" + this.props.params.userId + "/playlists/";
     }
     $.get(url, (data) => {
       this.setState({playlists: data, currectPage: window.location.hash.split('?')[0]});
@@ -14,9 +15,9 @@ var PlaylistsView = React.createClass({
   },
   componentWillUpdate: function() {
     if(this.state.currectPage !== window.location.hash.split('?')[0]) {
-      var url = "https://onyourleft.herokuapp.com/api/playlists";
+      var url = URL + "/api/playlists";
       if(this.props.params.userId) {
-        url = "https://onyourleft.herokuapp.com/api/users/" + this.props.params.userId + "/playlists/";
+        url = URL + "/api/users/" + this.props.params.userId + "/playlists/";
       }
       $.get(url, (data) => {
         this.setState({playlists: data, currectPage: window.location.hash.split('?')[0]});

@@ -1,4 +1,5 @@
 var React = require('react');
+var URL = require('./url.js');
 
 var Search = React.createClass({
   getInitialState: function() {
@@ -24,7 +25,7 @@ var Search = React.createClass({
     }
     $.ajax({
       method: "POST",
-      url: "https://onyourleft.herokuapp.com/api/playlists",
+      url: URL + "/api/playlists",
       data: {
         title: title,
         tracks: this.props.playlist,
