@@ -1,9 +1,7 @@
 body {
   background-color: #121314;
   color: #D7D8DE;
-  border: 0px;
 }
-
 
 .top-bar {
   background-color: #212121;
@@ -12,9 +10,6 @@ body {
 .menu li{
   background-color: #212121;
   color: #87888B;
-}
-
-table {
 }
 
 thead {
@@ -55,6 +50,6 @@ h4 {
   box-shadow: 0px 2px 6px 1px #373737;
 }
 
-img {
+.playlistImg {
   height: 220px;
 }

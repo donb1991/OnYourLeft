@@ -4,11 +4,13 @@ var PlaylistBuilder = require('./playlistBuilder.jsx');
 var PlaylistsView = require('./playlistsView.jsx');
 var PlaylistView = require('./playlistView.jsx');
 var Nav = require('./nav.jsx');
+var URL = require('./url.js');
+
 import { Router, Route, IndexRoute} from 'react-router'
 
 var App = React.createClass({
   componentWillMount: function() {
-    $.get("https://onyourleft.herokuapp.com/api/users").then((data => {
+    $.get(URL + "/api/users").then((data => {
       this.setState(data);
     }));
   },
@@ -32,7 +34,7 @@ var App = React.createClass({
         response_type: 'code',
         client_id: '3985f789131b42f68a5dcebd5ae1b9cd',
         scope: scope,
-        redirect_uri: "https://onyourleft.herokuapp.com/callback",
+        redirect_uri: URL + "/callback",
         show_dialog: true
       };
       var query = [];
@@ -56,7 +58,7 @@ var App = React.createClass({
      if (loginWindow !== null) {
         if (loginWindow.login) {
           clearInterval(loginWindowClosed);
-          $.get("https://onyourleft.herokuapp.com/api/users").then((data => {
+          $.get(URL + "/api/users").then((data => {
             this.setState(data);
           }))
           resolve(true);
@@ -70,7 +72,7 @@ var App = React.createClass({
   },
 
   logout: function() {
-    $.get("https://onyourleft.herokuapp.com/logout").done(() => {
+    $.get(URL + "/logout").done(() => {
       this.setState({user: null});
     });
   },
