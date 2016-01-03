@@ -2,6 +2,7 @@ var React = require('react');
 var Search = require('./searchUI.jsx');
 var SearchResult = require('./searchResult.jsx');
 var Playlist = require('./playlist.jsx');
+var URL = require('./url.js');
 
 var PlaylistBuilder = React.createClass({
   componentDidMount: function() {
@@ -39,15 +40,23 @@ var PlaylistBuilder = React.createClass({
       bestBPM: 180,
       results: [],
       playlist: [],
-      duration: 0
+      duration: 0,
+      isLoading: false,
+      hasError: false
     };
   },
 
   getTracks: function() {
-    $.get("https://onyourleft.herokuapp.com/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
+    this.setState({isLoading: true, hasError: false});
+    $.get(URL + "/api/search?q=" + this.state.userInputs.searchBy + '=' + this.state.userInputs.searchValue).done((data) => {
       var newPlaylist = this.sortTracks(data, this.state.bestBPM);
-      localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
-      this.updateResults(newPlaylist);
+      this.setState({isLoading: false});
+      if(newPlaylist.length === 0) {
+        this.setState({hasError: true});
+      } else {
+        localStorage.setItem('results', JSON.stringify({results: newPlaylist}));
+        this.updateResults(newPlaylist);
+      }
     });
   },
 
@@ -114,7 +123,19 @@ var PlaylistBuilder = React.createClass({
         login={this.props.login}
         playlist={this.state.playlist}
       />
-      <div className="row">
+      <div className="row" hidden={!this.state.isLoading}>
+        <div className="loading">
+          <div className="spinner">
+            <div className="mask">
+              <div className="maskedCircle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row" hidden={!this.state.hasError}>
+        <h4>No Tracks found</h4>
+      </div>
+      <div className="row" hidden={this.state.results.length === 0 && this.state.playlist.length === 0}>
         <SearchResult
           addToPlaylist={this.addToPlaylist}
           results={this.state.results}

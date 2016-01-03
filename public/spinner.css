@@ -1,0 +1,29 @@
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading {
+  width: 28px;
+  height: 28px;
+  margin: 5px auto;
+}
+
+.loading .maskedCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 12px;
+  border: 3px solid white;
+}
+
+.loading .mask {
+  width: 12px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.loading .spinner {
+  width: 26px;
+  height: 26px;
+  animation: spin 1s infinite linear;
+}

@@ -1,10 +1,11 @@
 var React = require('react');
+var URL = require('./url.js');
 import {IndexLink, Link} from 'react-router'
 
 
 var PlaylistView = React.createClass({
   componentWillMount: function() {
-    var url = "https://onyourleft.herokuapp.com/api/playlists/" + this.props.params.id;
+    var url = URL + "/api/playlists/" + this.props.params.id;
     $.get(url, (data) => {
       this.setState({playlist: data});
     });
@@ -41,7 +42,7 @@ var PlaylistView = React.createClass({
   export: function(event) {
     $.ajax({
       method: "POST",
-      url: "https://onyourleft.herokuapp.com/api/playlists",
+      url: URL + "/api/playlists",
       data: {
         title: this.state.playlist.name,
         tracks: this.state.playlist.tracks,
