@@ -1,7 +1,6 @@
 body {
   background-color: #121314;
   color: #D7D8DE;
-  border: 0px;
 }
 
 .top-bar {
@@ -53,19 +52,4 @@ h4 {
 
 .playlistImg {
   height: 220px;
-}
-
-footer {
-  background-color: #212121;
-  position:fixed;
-  bottom:0px;
-  left:0px;
-  right:0px;
-  margin-bottom:0px;
-  padding: 10px 0;
-}
-
-.footerText {
-  text-align: right;
-  vertical-align: middle;
 }

@@ -61,6 +61,7 @@ var Search = React.createClass({
   },
 
   handleExport: function(event) {
+    event.preventDefault();
     if(!this.props.user) {
       this.props.login().then(() => {
         this.export();
@@ -107,7 +108,7 @@ var Search = React.createClass({
           </form>
         </div>
 
-        <div className="step3" hidden={this.state.step3}>
+        <form className="step3" hidden={this.state.step3} onSubmit={this.handleExport}>
           <div className="row">
             <h4 className="columns">Name your playlist</h4>
           </div>
@@ -116,10 +117,10 @@ var Search = React.createClass({
               <input type="text" placeholder="Playlist Title" value={this.props.userInputs.title}  name="title" onChange={this.handleChange}/>
             </div>
             <div className="large-3 columns">
-              <button className="button" onClick={this.handleExport}>Export to Spotify</button>
+              <button type="sumbit"><img src="create-playlist-green.png" /> </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   }
