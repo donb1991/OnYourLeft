@@ -25556,7 +25556,7 @@
   \********************/
 /***/ function(module, exports) {
 
-	module.exports = "https://onyourleft.herokuapp.com";
+	module.exports = "http://onyourleft.herokuapp.com";
 
 
 /***/ },
