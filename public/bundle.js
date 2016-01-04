@@ -51,6 +51,12 @@
 	
 	var _reactRouter = __webpack_require__(/*! react-router */ 1);
 	
+	var _createHashHistory = __webpack_require__(/*! history/lib/createHashHistory */ 161);
+	
+	var _createHashHistory2 = _interopRequireDefault(_createHashHistory);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	var React = __webpack_require__(/*! react */ 5);
 	var ReactDOM = __webpack_require__(/*! react-dom */ 209);
 	var PlaylistBuilder = __webpack_require__(/*! ./playlistBuilder.jsx */ 210);
@@ -58,6 +64,8 @@
 	var PlaylistView = __webpack_require__(/*! ./playlistView.jsx */ 304);
 	var Nav = __webpack_require__(/*! ./nav.jsx */ 305);
 	var URL = __webpack_require__(/*! ./url.js */ 212);
+	
+	var history = (0, _createHashHistory2.default)({ queryKey: false });
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -159,7 +167,7 @@
 	
 	ReactDOM.render(React.createElement(
 	  _reactRouter.Router,
-	  null,
+	  { history: history },
 	  React.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: App },

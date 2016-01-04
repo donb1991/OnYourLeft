@@ -5,8 +5,9 @@ var PlaylistsView = require('./playlistsView.jsx');
 var PlaylistView = require('./playlistView.jsx');
 var Nav = require('./nav.jsx');
 var URL = require('./url.js');
-
 import { Router, Route, IndexRoute} from 'react-router'
+import createHashHistory from 'history/lib/createHashHistory'
+var history = createHashHistory({queryKey: false});
 
 var App = React.createClass({
   componentWillMount: function() {
@@ -100,7 +101,7 @@ var App = React.createClass({
 });
 
 ReactDOM.render((
-  <Router>
+  <Router history={history}>
     <Route path='/' component={App} >
       <IndexRoute component={PlaylistBuilder} />
       <Route path='/playlists' component={PlaylistsView}/>
