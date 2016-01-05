@@ -1,1 +1,1 @@
-module.exports = "http://onyourleft.herokuapp.com";
+module.exports = "https://onyourleft.herokuapp.com";
